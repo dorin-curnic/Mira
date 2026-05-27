@@ -6,43 +6,25 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXContainerItemProxy section */
-		DF3B45F12FC725B60071E6D9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DF3B45DB2FC725B50071E6D9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DF3B45E22FC725B50071E6D9;
-			remoteInfo = Mira;
-		};
-		DF3B45FB2FC725B60071E6D9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DF3B45DB2FC725B50071E6D9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DF3B45E22FC725B50071E6D9;
-			remoteInfo = Mira;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
-		DF3B45E32FC725B50071E6D9 /* Mira.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mira.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		DF3B45F02FC725B60071E6D9 /* MiraTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MiraTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		DF3B45FA2FC725B60071E6D9 /* MiraUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MiraUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF3B45E32FC725B50071E6D9 /* Mira_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mira_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF3B46112FC726D50071E6D9 /* Mira_macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mira_macOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		DF3B45E52FC725B50071E6D9 /* Mira */ = {
+		DF3B46122FC726D50071E6D9 /* Mira_macOS */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Mira;
+			path = Mira_macOS;
 			sourceTree = "<group>";
 		};
-		DF3B45F32FC725B60071E6D9 /* MiraTests */ = {
+		DF7EED802FC733BB00A64B1E /* MiraShared */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MiraTests;
+			path = MiraShared;
 			sourceTree = "<group>";
 		};
-		DF3B45FD2FC725B60071E6D9 /* MiraUITests */ = {
+		DF7EED852FC733C700A64B1E /* Mira_iOS */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MiraUITests;
+			path = Mira_iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -55,14 +37,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DF3B45ED2FC725B60071E6D9 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DF3B45F72FC725B60071E6D9 /* Frameworks */ = {
+		DF3B460E2FC726D50071E6D9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -75,19 +50,18 @@
 		DF3B45DA2FC725B50071E6D9 = {
 			isa = PBXGroup;
 			children = (
-				DF3B45E52FC725B50071E6D9 /* Mira */,
-				DF3B45F32FC725B60071E6D9 /* MiraTests */,
-				DF3B45FD2FC725B60071E6D9 /* MiraUITests */,
 				DF3B45E42FC725B50071E6D9 /* Products */,
+				DF7EED852FC733C700A64B1E /* Mira_iOS */,
+				DF3B46122FC726D50071E6D9 /* Mira_macOS */,
+				DF7EED802FC733BB00A64B1E /* MiraShared */,
 			);
 			sourceTree = "<group>";
 		};
 		DF3B45E42FC725B50071E6D9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DF3B45E32FC725B50071E6D9 /* Mira.app */,
-				DF3B45F02FC725B60071E6D9 /* MiraTests.xctest */,
-				DF3B45FA2FC725B60071E6D9 /* MiraUITests.xctest */,
+				DF3B45E32FC725B50071E6D9 /* Mira_iOS.app */,
+				DF3B46112FC726D50071E6D9 /* Mira_macOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,9 +69,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DF3B45E22FC725B50071E6D9 /* Mira */ = {
+		DF3B45E22FC725B50071E6D9 /* Mira_iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DF3B46042FC725B60071E6D9 /* Build configuration list for PBXNativeTarget "Mira" */;
+			buildConfigurationList = DF3B46042FC725B60071E6D9 /* Build configuration list for PBXNativeTarget "Mira_iOS" */;
 			buildPhases = (
 				DF3B45DF2FC725B50071E6D9 /* Sources */,
 				DF3B45E02FC725B50071E6D9 /* Frameworks */,
@@ -108,60 +82,38 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				DF3B45E52FC725B50071E6D9 /* Mira */,
+				DF7EED802FC733BB00A64B1E /* MiraShared */,
+				DF7EED852FC733C700A64B1E /* Mira_iOS */,
 			);
-			name = Mira;
+			name = Mira_iOS;
 			packageProductDependencies = (
 			);
 			productName = Mira;
-			productReference = DF3B45E32FC725B50071E6D9 /* Mira.app */;
+			productReference = DF3B45E32FC725B50071E6D9 /* Mira_iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		DF3B45EF2FC725B60071E6D9 /* MiraTests */ = {
+		DF3B46102FC726D50071E6D9 /* Mira_macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DF3B46072FC725B60071E6D9 /* Build configuration list for PBXNativeTarget "MiraTests" */;
+			buildConfigurationList = DF3B462F2FC726D60071E6D9 /* Build configuration list for PBXNativeTarget "Mira_macOS" */;
 			buildPhases = (
-				DF3B45EC2FC725B60071E6D9 /* Sources */,
-				DF3B45ED2FC725B60071E6D9 /* Frameworks */,
-				DF3B45EE2FC725B60071E6D9 /* Resources */,
+				DF3B460D2FC726D50071E6D9 /* Sources */,
+				DF3B460E2FC726D50071E6D9 /* Frameworks */,
+				DF3B460F2FC726D50071E6D9 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				DF3B45F22FC725B60071E6D9 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				DF3B45F32FC725B60071E6D9 /* MiraTests */,
+				DF3B46122FC726D50071E6D9 /* Mira_macOS */,
+				DF7EED802FC733BB00A64B1E /* MiraShared */,
 			);
-			name = MiraTests;
+			name = Mira_macOS;
 			packageProductDependencies = (
 			);
-			productName = MiraTests;
-			productReference = DF3B45F02FC725B60071E6D9 /* MiraTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		DF3B45F92FC725B60071E6D9 /* MiraUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = DF3B460A2FC725B60071E6D9 /* Build configuration list for PBXNativeTarget "MiraUITests" */;
-			buildPhases = (
-				DF3B45F62FC725B60071E6D9 /* Sources */,
-				DF3B45F72FC725B60071E6D9 /* Frameworks */,
-				DF3B45F82FC725B60071E6D9 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				DF3B45FC2FC725B60071E6D9 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				DF3B45FD2FC725B60071E6D9 /* MiraUITests */,
-			);
-			name = MiraUITests;
-			packageProductDependencies = (
-			);
-			productName = MiraUITests;
-			productReference = DF3B45FA2FC725B60071E6D9 /* MiraUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
+			productName = Mira_macOS;
+			productReference = DF3B46112FC726D50071E6D9 /* Mira_macOS.app */;
+			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
@@ -176,13 +128,8 @@
 					DF3B45E22FC725B50071E6D9 = {
 						CreatedOnToolsVersion = 26.5;
 					};
-					DF3B45EF2FC725B60071E6D9 = {
+					DF3B46102FC726D50071E6D9 = {
 						CreatedOnToolsVersion = 26.5;
-						TestTargetID = DF3B45E22FC725B50071E6D9;
-					};
-					DF3B45F92FC725B60071E6D9 = {
-						CreatedOnToolsVersion = 26.5;
-						TestTargetID = DF3B45E22FC725B50071E6D9;
 					};
 				};
 			};
@@ -200,9 +147,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DF3B45E22FC725B50071E6D9 /* Mira */,
-				DF3B45EF2FC725B60071E6D9 /* MiraTests */,
-				DF3B45F92FC725B60071E6D9 /* MiraUITests */,
+				DF3B45E22FC725B50071E6D9 /* Mira_iOS */,
+				DF3B46102FC726D50071E6D9 /* Mira_macOS */,
 			);
 		};
 /* End PBXProject section */
@@ -215,14 +161,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DF3B45EE2FC725B60071E6D9 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DF3B45F82FC725B60071E6D9 /* Resources */ = {
+		DF3B460F2FC726D50071E6D9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -239,14 +178,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DF3B45EC2FC725B60071E6D9 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DF3B45F62FC725B60071E6D9 /* Sources */ = {
+		DF3B460D2FC726D50071E6D9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -254,19 +186,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		DF3B45F22FC725B60071E6D9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DF3B45E22FC725B50071E6D9 /* Mira */;
-			targetProxy = DF3B45F12FC725B60071E6D9 /* PBXContainerItemProxy */;
-		};
-		DF3B45FC2FC725B60071E6D9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DF3B45E22FC725B50071E6D9 /* Mira */;
-			targetProxy = DF3B45FB2FC725B60071E6D9 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		DF3B46022FC725B60071E6D9 /* Debug */ = {
@@ -450,83 +369,67 @@
 			};
 			name = Release;
 		};
-		DF3B46082FC725B60071E6D9 /* Debug */ = {
+		DF3B46302FC726D60071E6D9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.5;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Curnic-Dorin.MiraTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "Curnic-Dorin.Mira-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mira.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Mira";
 			};
 			name = Debug;
 		};
-		DF3B46092FC725B60071E6D9 /* Release */ = {
+		DF3B46312FC726D60071E6D9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.5;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Curnic-Dorin.MiraTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "Curnic-Dorin.Mira-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mira.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Mira";
-			};
-			name = Release;
-		};
-		DF3B460B2FC725B60071E6D9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Curnic-Dorin.MiraUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Mira;
-			};
-			name = Debug;
-		};
-		DF3B460C2FC725B60071E6D9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Curnic-Dorin.MiraUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Mira;
 			};
 			name = Release;
 		};
@@ -542,7 +445,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DF3B46042FC725B60071E6D9 /* Build configuration list for PBXNativeTarget "Mira" */ = {
+		DF3B46042FC725B60071E6D9 /* Build configuration list for PBXNativeTarget "Mira_iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DF3B46052FC725B60071E6D9 /* Debug */,
@@ -551,20 +454,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DF3B46072FC725B60071E6D9 /* Build configuration list for PBXNativeTarget "MiraTests" */ = {
+		DF3B462F2FC726D60071E6D9 /* Build configuration list for PBXNativeTarget "Mira_macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				DF3B46082FC725B60071E6D9 /* Debug */,
-				DF3B46092FC725B60071E6D9 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		DF3B460A2FC725B60071E6D9 /* Build configuration list for PBXNativeTarget "MiraUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				DF3B460B2FC725B60071E6D9 /* Debug */,
-				DF3B460C2FC725B60071E6D9 /* Release */,
+				DF3B46302FC726D60071E6D9 /* Debug */,
+				DF3B46312FC726D60071E6D9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
