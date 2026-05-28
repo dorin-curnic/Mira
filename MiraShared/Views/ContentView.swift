@@ -2,8 +2,23 @@ import SwiftUI
 
 struct ContentView: View {
 	@State private var selectedPage: MiraPage = .dashboard
+	@State private var selectedTheme: MiraThemeMode = .system
+	@State private var selectedLanguage: MiraLanguage = .english
+
+	@StateObject private var networkUsageService = NetworkUsageService()
 
 	var body: some View {
+
+		rootLayout
+			.onAppear {
+				networkUsageService.start()
+			}
+			.onDisappear {
+				networkUsageService.stop()
+			}
+	}
+	@ViewBuilder
+	private var rootLayout: some View {
 #if os(macOS)
 		macOSLayout
 #else
@@ -13,26 +28,30 @@ struct ContentView: View {
 
 #if !os(macOS)
 	private var iOSLayout: some View {
-		TabView(selection: $selectedPage) {
-			DashboardView()
-				.tabItem {
-					Label(MiraPage.dashboard.rawValue, systemImage: MiraPage.dashboard.iconName)
-				}
-				.tag(MiraPage.dashboard)
+		VStack(spacing: 0) {
+			topBar
 
-			CredentialsView()
-				.tabItem {
-					Label(MiraPage.credentials.rawValue, systemImage: MiraPage.credentials.iconName)
-				}
-				.tag(MiraPage.credentials)
+			TabView(selection: $selectedPage) {
+				DashboardView()
+					.tabItem {
+						Label(MiraPage.dashboard.rawValue, systemImage: MiraPage.dashboard.iconName)
+					}
+					.tag(MiraPage.dashboard)
 
-			UsageView()
-				.tabItem {
-					Label(MiraPage.usage.rawValue, systemImage: MiraPage.usage.iconName)
-				}
-				.tag(MiraPage.usage)
+				CredentialsView()
+					.tabItem {
+						Label(MiraPage.credentials.rawValue, systemImage: MiraPage.credentials.iconName)
+					}
+					.tag(MiraPage.credentials)
+
+				NetworkView(networkUsageService: networkUsageService)
+					.tabItem {
+						Label(MiraPage.network.rawValue, systemImage: MiraPage.network.iconName)
+					}
+					.tag(MiraPage.network)
+			}
+			.tint(MiraTheme.ColorToken.primary)
 		}
-		.tint(MiraTheme.ColorToken.primary)
 	}
 #endif
 
@@ -48,11 +67,26 @@ struct ContentView: View {
 			.navigationTitle("Mira")
 			.frame(minWidth: 180)
 		} detail: {
-			selectedView
-				.frame(minWidth: 520, minHeight: 520)
+			VStack(spacing: 0) {
+				topBar
+				selectedView
+			}
+			.frame(minWidth: 520, minHeight: 520)
 		}
 	}
 #endif
+
+	private var topBar: some View {
+		VStack(spacing: 0) {
+			MiraTopBar(
+				selectedTheme: $selectedTheme,
+				selectedLanguage: $selectedLanguage
+			)
+			.padding(.horizontal, MiraTheme.Spacing.xl)
+			.padding(.vertical, MiraTheme.Spacing.md)
+		}
+		.background(MiraTheme.ColorToken.background)
+	}
 
 	@ViewBuilder
 	private var selectedView: some View {
@@ -61,8 +95,8 @@ struct ContentView: View {
 			DashboardView()
 		case .credentials:
 			CredentialsView()
-		case .usage:
-			UsageView()
+		case .network:
+			NetworkView(networkUsageService: networkUsageService)
 		}
 	}
 }

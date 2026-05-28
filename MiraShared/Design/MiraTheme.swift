@@ -42,6 +42,12 @@ enum MiraTheme {
 		static let input = Color(hex: 0xe4e4e7)
 		static let ring = Color(hex: 0xa1a1aa)
 
+		static let chart1 = Color(hex: 0xffd230)
+		static let chart2 = Color(hex: 0xfe9a00)
+		static let chart3 = Color(hex: 0xe17100)
+		static let chart4 = Color(hex: 0xbb4d00)
+		static let chart5 = Color(hex: 0x973c00)
+
 		static let darkBackground = Color(hex: 0x09090b)
 		static let darkForeground = Color(hex: 0xfafafa)
 		static let darkCard = Color(hex: 0x18181b)
