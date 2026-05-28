@@ -1,59 +1,68 @@
 import SwiftUI
 
 struct ContentView: View {
-	@State private var statusText = "Not authenticated"
-	@State private var isAuthenticating = false
-
-	private let authService = AuthService()
+	@State private var selectedPage: MiraPage = .dashboard
 
 	var body: some View {
-		VStack(spacing: 16) {
-			Text("Mira")
-				.font(.largeTitle)
-				.fontWeight(.bold)
-
-			Text("University Wi-Fi authentication helper")
-				.foregroundStyle(.secondary)
-
-			Text(statusText)
-				.font(.callout)
-				.foregroundStyle(.secondary)
-				.multilineTextAlignment(.center)
-
-			Button {
-				Task {
-					await authenticate()
-				}
-			} label: {
-				if isAuthenticating {
-					ProgressView()
-				} else {
-					Text("Authenticate")
-				}
-			}
-			.buttonStyle(.borderedProminent)
-			.disabled(isAuthenticating)
-		}
-		.padding()
-		.frame(minWidth: 320, minHeight: 240)
+#if os(macOS)
+		macOSLayout
+#else
+		iOSLayout
+#endif
 	}
 
-	private func authenticate() async {
-		isAuthenticating = true
-		statusText = "Waiting for authentication..."
+#if !os(macOS)
+	private var iOSLayout: some View {
+		TabView(selection: $selectedPage) {
+			DashboardView()
+				.tabItem {
+					Label(MiraPage.dashboard.rawValue, systemImage: MiraPage.dashboard.iconName)
+				}
+				.tag(MiraPage.dashboard)
 
-		defer {
-			isAuthenticating = false
+			CredentialsView()
+				.tabItem {
+					Label(MiraPage.credentials.rawValue, systemImage: MiraPage.credentials.iconName)
+				}
+				.tag(MiraPage.credentials)
+
+			UsageView()
+				.tabItem {
+					Label(MiraPage.usage.rawValue, systemImage: MiraPage.usage.iconName)
+				}
+				.tag(MiraPage.usage)
 		}
+		.tint(MiraTheme.ColorToken.primary)
+	}
+#endif
 
-		do {
-			let success = try await authService.authenticate()
-
-			if success {
-				statusText = "Authentication successful"
+#if os(macOS)
+	private var macOSLayout: some View {
+		NavigationSplitView {
+			List(selection: $selectedPage) {
+				ForEach(MiraPage.allCases) { page in
+					Label(page.rawValue, systemImage: page.iconName)
+						.tag(page)
+				}
 			}
-		} catch {
-			statusText = error.localizedDescription
+			.navigationTitle("Mira")
+			.frame(minWidth: 180)
+		} detail: {
+			selectedView
+				.frame(minWidth: 520, minHeight: 520)
+		}
+	}
+#endif
+
+	@ViewBuilder
+	private var selectedView: some View {
+		switch selectedPage {
+		case .dashboard:
+			DashboardView()
+		case .credentials:
+			CredentialsView()
+		case .usage:
+			UsageView()
 		}
 	}
 }
