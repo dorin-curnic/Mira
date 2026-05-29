@@ -16,6 +16,7 @@ struct CredentialsSectionView: View {
 	let password: String
 	let portal: String
 
+	@Environment(\.miraLanguage) private var language
 	@Binding var activeField: CredentialField?
 	@State private var revealedFields: Set<CredentialField> = []
 
@@ -24,7 +25,7 @@ struct CredentialsSectionView: View {
 			VStack(alignment: .leading, spacing: 0) {
 				credentialRow(
 					field: .username,
-					title: "Username",
+					title: MiraText.username.localized(language),
 					value: username,
 					isSensitive: false
 				)
@@ -33,7 +34,7 @@ struct CredentialsSectionView: View {
 
 				credentialRow(
 					field: .password,
-					title: "Password",
+					title: MiraText.password.localized(language),
 					value: password,
 					isSensitive: true
 				)
@@ -42,7 +43,7 @@ struct CredentialsSectionView: View {
 
 				credentialRow(
 					field: .portal,
-					title: "Portal",
+					title: MiraText.portal.localized(language),
 					value: portal,
 					isSensitive: true
 				)
@@ -101,7 +102,7 @@ struct CredentialsSectionView: View {
 		Button {
 			performCopy(for: field)
 		} label: {
-			Text(field.copyLabel)
+			Text(field.copyLabel(language: language))
 				.font(.subheadline)
 				.fontWeight(.medium)
 				.foregroundStyle(MiraTheme.ColorToken.foreground)

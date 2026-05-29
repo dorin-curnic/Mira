@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct DashboardView: View {
+	@Environment(\.miraLanguage) private var language
+
 	@State private var connectionStatus: WiFiConnectionStatus = .disconnected
 	@State private var isAuthenticating = false
 	@State private var userAllowsAutoReconnect = false
@@ -12,7 +14,8 @@ struct DashboardView: View {
 	@State private var speedTestProgress = 0.0
 
 	private var connectionActionTitle: String {
-		connectionStatus == .connected ? "Disconnect" : "Connect"
+		let text: MiraText = connectionStatus == .connected ? .disconnect : .connect
+		return text.localized(language)
 	}
 
 	private var connectionActionTint: Color {
@@ -41,12 +44,12 @@ struct DashboardView: View {
 
 	private var pageHeader: some View {
 		VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-			Text("Dashboard")
+			Text(.dashboardTitle, language: language)
 				.font(.largeTitle)
 				.fontWeight(.bold)
 				.foregroundStyle(MiraTheme.ColorToken.foreground)
 
-			Text("Connect to university Wi-Fi.")
+			Text(.dashboardSubtitle, language: language)
 				.font(.subheadline)
 				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 		}
@@ -86,7 +89,7 @@ struct DashboardView: View {
 		MiraCard {
 			VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
 				HStack(alignment: .top, spacing: MiraTheme.Spacing.md) {
-					Text("UTM Wi-Fi")
+					Text(.wifiName, language: language)
 						.font(.title3)
 						.fontWeight(.semibold)
 						.foregroundStyle(MiraTheme.ColorToken.foreground)
@@ -98,7 +101,7 @@ struct DashboardView: View {
 
 				Spacer()
 
-				Text("Connect to the UTM-WiNetUni_Auth Wi-Fi, and check the status of the connection")
+				Text(.wifiDescription, language: language)
 					.font(.subheadline)
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 			}
@@ -130,7 +133,7 @@ struct DashboardView: View {
 
 		do {
 			try await authService.authenticate(
-				reason: "Authenticate to securely connect to university Wi-Fi."
+				reason: MiraText.authenticateReason.localized(language)
 			)
 
 			userAllowsAutoReconnect = true

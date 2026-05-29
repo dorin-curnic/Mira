@@ -10,6 +10,7 @@ struct ContentView: View {
 	var body: some View {
 		rootLayout
 			.preferredColorScheme(selectedTheme.colorScheme)
+			.environment(\.miraLanguage, selectedLanguage)
 			.onAppear {
 				networkUsageService.start()
 			}

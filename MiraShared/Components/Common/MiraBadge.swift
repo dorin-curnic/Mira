@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct MiraBadge: View {
+	@Environment(\.miraLanguage) private var language
+
 	let status: WiFiConnectionStatus
 
 	var body: some View {
@@ -9,7 +11,7 @@ struct MiraBadge: View {
 				.fill(status.foregroundColor)
 				.frame(width: 7, height: 7)
 
-			Text(status.rawValue)
+			Text(status.displayText, language: language)
 				.font(.caption)
 				.fontWeight(.medium)
 		}

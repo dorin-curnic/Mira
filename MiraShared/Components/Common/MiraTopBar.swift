@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MiraTopBar: View {
 	@Environment(\.colorScheme) private var colorScheme
+	@Environment(\.miraLanguage) private var language
 
 	@Binding var selectedTheme: MiraThemeMode
 	@Binding var selectedLanguage: MiraLanguage
@@ -20,7 +21,7 @@ struct MiraTopBar: View {
 
 			Spacer()
 
-			Text("Mira")
+			Text(.appName, language: language)
 				.font(.title2)
 				.fontWeight(.semibold)
 				.foregroundStyle(MiraTheme.ColorToken.foreground)
@@ -33,14 +34,14 @@ struct MiraTopBar: View {
 
 	private var languageMenu: some View {
 		Menu {
-			ForEach(MiraLanguage.allCases) { language in
+			ForEach(MiraLanguage.allCases) { menuLanguage in
 				Button {
-					selectedLanguage = language
+					selectedLanguage = menuLanguage
 				} label: {
 					HStack {
-						Text(language.rawValue)
+						Text(menuLanguage.displayText, language: language)
 
-						if selectedLanguage == language {
+						if selectedLanguage == menuLanguage {
 							Image(systemName: "checkmark")
 						}
 					}
@@ -71,7 +72,8 @@ struct MiraTopBar: View {
 				} label: {
 					HStack {
 						Image(systemName: theme.iconName)
-						Text(theme.rawValue)
+
+						Text(theme.displayText, language: language)
 
 						if selectedTheme == theme {
 							Image(systemName: "checkmark")

@@ -28,4 +28,15 @@ enum MiraThemeMode: String, CaseIterable, Identifiable {
 			return .dark
 		}
 	}
+
+	var displayText: MiraText {
+		switch self {
+		case .system:
+			return .system
+		case .light:
+			return .light
+		case .dark:
+			return .dark
+		}
+	}
 }

@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct SpeedTestCard: View {
+	@Environment(\.miraLanguage) private var language
+
 	let displayedSpeedValueText: String
 	let progress: Double
 	let isTesting: Bool
@@ -20,7 +22,7 @@ struct SpeedTestCard: View {
 
 					RadialSpeedChart(
 						valueText: displayedSpeedValueText,
-						subtitle: "Mbps",
+						subtitle: MiraText.mbps.localized(language),
 						progress: progress,
 						isTesting: isTesting,
 						isFinished: isFinished,
@@ -42,12 +44,12 @@ struct SpeedTestCard: View {
 	private var header: some View {
 		HStack(alignment: .top, spacing: MiraTheme.Spacing.md) {
 			VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-				Text("Speed Test")
+				Text(.speedTestTitle, language: language)
 					.font(.title3)
 					.fontWeight(.semibold)
 					.foregroundStyle(MiraTheme.ColorToken.foreground)
 
-				Text("Mira downloads a small test file to analyse your network.")
+				Text(.speedTestDescription, language: language)
 					.font(.subheadline)
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 			}

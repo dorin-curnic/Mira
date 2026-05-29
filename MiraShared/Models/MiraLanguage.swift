@@ -26,4 +26,21 @@ enum MiraLanguage: String, CaseIterable, Identifiable {
 			return "Ja"
 		}
 	}
+
+	var displayText: MiraText {
+		switch self {
+		case .english:
+			return .english
+		case .romanian:
+			return .romanian
+		case .russian:
+			return .russian
+		case .french:
+			return .french
+		case .chinese:
+			return .chinese
+		case .japanese:
+			return .japanese
+		}
+	}
 }

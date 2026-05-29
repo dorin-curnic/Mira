@@ -31,4 +31,17 @@ enum WiFiConnectionStatus: String, CaseIterable {
 			return MiraTheme.Status.disconnectedBackground
 		}
 	}
+
+	var displayText: MiraText {
+		switch self {
+		case .connected:
+			return .connected
+		case .pending:
+			return .pending
+		case .rejected:
+			return .rejected
+		case .disconnected:
+			return .disconnected
+		}
+	}
 }

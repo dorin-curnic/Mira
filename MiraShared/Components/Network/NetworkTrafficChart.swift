@@ -2,6 +2,8 @@ import SwiftUI
 import Charts
 
 struct NetworkTrafficChart: View {
+	@Environment(\.miraLanguage) private var language
+
 	let kind: NetworkTrafficKind
 	let speedText: String
 	let totalText: String
@@ -44,7 +46,7 @@ struct NetworkTrafficChart: View {
 	private var header: some View {
 		VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
 			HStack(alignment: .firstTextBaseline) {
-				Text(kind.title)
+				Text(kind.title(language: language))
 					.font(.title3)
 					.fontWeight(.semibold)
 					.foregroundStyle(MiraTheme.ColorToken.foreground)
@@ -57,7 +59,7 @@ struct NetworkTrafficChart: View {
 					.foregroundStyle(MiraTheme.ColorToken.foreground)
 			}
 
-			Text("Total: \(totalText)")
+			Text("\(MiraText.total.localized(language)): \(totalText)")
 				.font(.caption)
 				.fontWeight(.medium)
 				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
@@ -91,7 +93,7 @@ struct NetworkTrafficChart: View {
 		}
 		.overlay {
 			if filteredPoints.isEmpty {
-				Text("Collecting network data...")
+				Text(.collectingNetworkData, language: language)
 					.font(.subheadline)
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 			}
@@ -104,14 +106,14 @@ struct NetworkTrafficChart: View {
 			AreaMark(
 				x: .value("Time", point.timestamp),
 				yStart: .value("Minimum", 0),
-				yEnd: .value(kind.title, kind.speed(from: point))
+				yEnd: .value(kind.title(language: language), kind.speed(from: point))
 			)
 			.foregroundStyle(areaGradient)
 			.interpolationMethod(.catmullRom)
 
 			LineMark(
 				x: .value("Time", point.timestamp),
-				y: .value(kind.title, kind.speed(from: point))
+				y: .value(kind.title(language: language), kind.speed(from: point))
 			)
 			.foregroundStyle(kind.color)
 			.lineStyle(
@@ -141,7 +143,7 @@ struct NetworkTrafficChart: View {
 
 			PointMark(
 				x: .value("Selected Time", selectedPoint.timestamp),
-				y: .value(kind.title, kind.speed(from: selectedPoint))
+				y: .value(kind.title(language: language), kind.speed(from: selectedPoint))
 			)
 			.foregroundStyle(kind.color)
 			.symbolSize(60)

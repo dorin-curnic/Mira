@@ -5,14 +5,14 @@ enum CredentialField: Equatable {
 	case password
 	case portal
 
-	var copyLabel: String {
+	func copyLabel(language: MiraLanguage) -> String {
 		switch self {
 		case .username:
-			return "Copy Username"
+			return MiraText.copyUsername.localized(language)
 		case .password:
-			return "Copy Password"
+			return MiraText.copyPassword.localized(language)
 		case .portal:
-			return "Copy Portal"
+			return MiraText.copyPortal.localized(language)
 		}
 	}
 }

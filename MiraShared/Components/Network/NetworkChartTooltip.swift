@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct NetworkChartTooltip: View {
+	@Environment(\.miraLanguage) private var language
+
 	let kind: NetworkTrafficKind
 	let point: NetworkUsagePoint
 
@@ -15,7 +17,7 @@ struct NetworkChartTooltip: View {
 					.fill(kind.color)
 					.frame(width: 8, height: 8)
 
-				Text(kind.title)
+				Text(kind.title(language: language))
 					.font(.caption)
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 

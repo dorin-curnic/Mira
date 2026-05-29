@@ -4,12 +4,12 @@ enum NetworkTrafficKind {
 	case download
 	case upload
 
-	var title: String {
+	func title(language: MiraLanguage) -> String {
 		switch self {
 		case .download:
-			return "Download"
+			return MiraText.download.localized(language)
 		case .upload:
-			return "Upload"
+			return MiraText.upload.localized(language)
 		}
 	}
 

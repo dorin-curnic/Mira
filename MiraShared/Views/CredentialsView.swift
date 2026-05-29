@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct CredentialsView: View {
+	@Environment(\.miraLanguage) private var language
+
 	@State private var activeField: CredentialField?
 
 	private let username = "name.surname@xyz.utm.md"
@@ -26,12 +28,12 @@ struct CredentialsView: View {
 
 	private var pageHeader: some View {
 		VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-			Text("Credentials")
+			Text(.credentialsTitle, language: language)
 				.font(.largeTitle)
 				.fontWeight(.bold)
 				.foregroundStyle(MiraTheme.ColorToken.foreground)
 
-			Text("Manage your credentials information.")
+			Text(.credentialsSubtitle, language: language)
 				.font(.subheadline)
 				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 		}

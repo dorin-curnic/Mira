@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct NetworkView: View {
+	@Environment(\.miraLanguage) private var language
+
 	@ObservedObject var networkUsageService: NetworkUsageService
 
 	var body: some View {
@@ -21,12 +23,12 @@ struct NetworkView: View {
 
 	private var pageHeader: some View {
 		VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-			Text("Network")
+			Text(.networkTitle, language: language)
 				.font(.largeTitle)
 				.fontWeight(.bold)
 				.foregroundStyle(MiraTheme.ColorToken.foreground)
 
-			Text("Track the usage of the connection.")
+			Text(.networkSubtitle, language: language)
 				.font(.subheadline)
 				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 		}
@@ -36,11 +38,11 @@ struct NetworkView: View {
 		MiraCard {
 			HStack {
 				VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-					Text("UTM Wi-Fi")
+					Text(.wifiName, language: language)
 						.font(.title3)
 						.fontWeight(.semibold)
 
-					Text("Wi-Fi Connection")
+					Text(.wifiConnection, language: language)
 						.font(.subheadline)
 						.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 				}
