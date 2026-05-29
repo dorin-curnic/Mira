@@ -85,15 +85,6 @@ struct ContentView: View {
 					}
 					.tag(MiraPage.dashboard)
 
-				CredentialsView()
-					.tabItem {
-						Label(
-							MiraPage.credentials.rawValue,
-							systemImage: MiraPage.credentials.iconName
-						)
-					}
-					.tag(MiraPage.credentials)
-
 				NetworkView(networkUsageService: networkUsageService)
 					.tabItem {
 						Label(
@@ -102,6 +93,15 @@ struct ContentView: View {
 						)
 					}
 					.tag(MiraPage.network)
+
+				SettingsView()
+					.tabItem {
+						Label(
+							MiraPage.settings.rawValue,
+							systemImage: MiraPage.settings.iconName
+						)
+					}
+					.tag(MiraPage.settings)
 			}
 			.tint(MiraTheme.ColorToken.primary)
 		}
@@ -136,11 +136,12 @@ struct ContentView: View {
 		switch selectedPage {
 		case .dashboard:
 			DashboardView()
-		case .credentials:
-			CredentialsView()
 		case .network:
 			NetworkView(networkUsageService: networkUsageService)
+		case .settings:
+			SettingsView()
 		}
+		
 	}
 }
 
