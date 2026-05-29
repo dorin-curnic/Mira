@@ -1,13 +1,17 @@
 import SwiftUI
 
 struct CredentialsView: View {
-	@State private var activeField: CredentialField? = nil
+	@State private var activeField: CredentialField?
+
+	private let username = "name.surname@xyz.utm.md"
+	private let password = "university-password-ewubrfoueqbfoque-wefwef"
+	private let portal = "wifi.university.local"
 
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading, spacing: MiraTheme.Spacing.xl) {
 				pageHeader
-				userDataCard
+				credentialsSection
 			}
 			.padding(MiraTheme.Spacing.xl)
 			.frame(maxWidth: 820)
@@ -33,11 +37,11 @@ struct CredentialsView: View {
 		}
 	}
 
-	private var userDataCard: some View {
+	private var credentialsSection: some View {
 		CredentialsSectionView(
-			username: "name.surname@xyz.utm.md",
-			password: "university-password-ewubrfoueqbfoque-wefwef",
-			portal: "wifi.university.local",
+			username: username,
+			password: password,
+			portal: portal,
 			activeField: $activeField
 		)
 	}

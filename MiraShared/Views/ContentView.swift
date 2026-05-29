@@ -8,7 +8,6 @@ struct ContentView: View {
 	@StateObject private var networkUsageService = NetworkUsageService()
 
 	var body: some View {
-
 		rootLayout
 			.onAppear {
 				networkUsageService.start()
@@ -17,6 +16,7 @@ struct ContentView: View {
 				networkUsageService.stop()
 			}
 	}
+
 	@ViewBuilder
 	private var rootLayout: some View {
 #if os(macOS)
@@ -24,6 +24,18 @@ struct ContentView: View {
 #else
 		iOSLayout
 #endif
+	}
+
+	private var topBar: some View {
+		VStack(spacing: 0) {
+			MiraTopBar(
+				selectedTheme: $selectedTheme,
+				selectedLanguage: $selectedLanguage
+			)
+			.padding(.horizontal, MiraTheme.Spacing.xl)
+			.padding(.vertical, MiraTheme.Spacing.md)
+		}
+		.background(MiraTheme.ColorToken.background)
 	}
 
 #if !os(macOS)
@@ -34,24 +46,34 @@ struct ContentView: View {
 			TabView(selection: $selectedPage) {
 				DashboardView()
 					.tabItem {
-						Label(MiraPage.dashboard.rawValue, systemImage: MiraPage.dashboard.iconName)
+						Label(
+							MiraPage.dashboard.rawValue,
+							systemImage: MiraPage.dashboard.iconName
+						)
 					}
 					.tag(MiraPage.dashboard)
 
 				CredentialsView()
 					.tabItem {
-						Label(MiraPage.credentials.rawValue, systemImage: MiraPage.credentials.iconName)
+						Label(
+							MiraPage.credentials.rawValue,
+							systemImage: MiraPage.credentials.iconName
+						)
 					}
 					.tag(MiraPage.credentials)
 
 				NetworkView(networkUsageService: networkUsageService)
 					.tabItem {
-						Label(MiraPage.network.rawValue, systemImage: MiraPage.network.iconName)
+						Label(
+							MiraPage.network.rawValue,
+							systemImage: MiraPage.network.iconName
+						)
 					}
 					.tag(MiraPage.network)
 			}
 			.tint(MiraTheme.ColorToken.primary)
 		}
+		.background(MiraTheme.ColorToken.background)
 	}
 #endif
 
@@ -72,21 +94,10 @@ struct ContentView: View {
 				selectedView
 			}
 			.frame(minWidth: 520, minHeight: 520)
+			.background(MiraTheme.ColorToken.background)
 		}
 	}
 #endif
-
-	private var topBar: some View {
-		VStack(spacing: 0) {
-			MiraTopBar(
-				selectedTheme: $selectedTheme,
-				selectedLanguage: $selectedLanguage
-			)
-			.padding(.horizontal, MiraTheme.Spacing.xl)
-			.padding(.vertical, MiraTheme.Spacing.md)
-		}
-		.background(MiraTheme.ColorToken.background)
-	}
 
 	@ViewBuilder
 	private var selectedView: some View {

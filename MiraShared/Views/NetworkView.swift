@@ -8,7 +8,7 @@ struct NetworkView: View {
 			ScrollView {
 				VStack(alignment: .leading, spacing: MiraTheme.Spacing.xl) {
 					pageHeader
-					connectedTimeCard
+					connectionStatusCard
 					trafficCharts(isCompact: geometry.size.width < 640)
 				}
 				.padding(MiraTheme.Spacing.xl)
@@ -32,7 +32,7 @@ struct NetworkView: View {
 		}
 	}
 
-	private var connectedTimeCard: some View {
+	private var connectionStatusCard: some View {
 		MiraCard {
 			HStack {
 				VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
@@ -74,35 +74,6 @@ struct NetworkView: View {
 				totalText: networkUsageService.uploadedTotalText,
 				points: networkUsageService.points
 			)
-		}
-	}
-}
-
-private struct NetworkSummaryCard: View {
-	let title: String
-	let value: String
-	let icon: String
-
-	var body: some View {
-		MiraCard {
-			HStack(spacing: MiraTheme.Spacing.md) {
-				VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-					Text(title)
-						.font(.subheadline)
-						.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-
-					Text(value)
-						.font(.title3)
-						.fontWeight(.semibold)
-						.foregroundStyle(MiraTheme.ColorToken.foreground)
-				}
-
-				Spacer()
-
-				Image(systemName: icon)
-					.font(.title3)
-					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-			}
 		}
 	}
 }

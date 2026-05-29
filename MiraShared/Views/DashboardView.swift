@@ -8,7 +8,6 @@ struct DashboardView: View {
 	@State private var isSpeedTesting = false
 	@State private var speedTestResult: SpeedTestResult?
 	@State private var speedTestError: String?
-	@State private var currentSpeedMbps = 0.0
 	@State private var currentSpeedValueText = "0.0"
 	@State private var speedTestProgress = 0.0
 
@@ -107,55 +106,18 @@ struct DashboardView: View {
 	}
 
 	private var speedTestCard: some View {
-		MiraCard {
-			VStack(alignment: .leading, spacing: MiraTheme.Spacing.md) {
-				HStack(alignment: .top, spacing: MiraTheme.Spacing.md) {
-					VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-						Text("Speed Test")
-							.font(.title3)
-							.fontWeight(.semibold)
-							.foregroundStyle(MiraTheme.ColorToken.foreground)
-
-						Text("Mira downloads a small test file to analyse your network.")
-							.font(.subheadline)
-							.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-					}
-
-					Spacer()
-
-					Image(systemName: "speedometer")
-						.font(.title3)
-						.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-				}
-
-				Divider()
-
-				HStack {
-					Spacer()
-
-					RadialChart(
-						valueText: displayedSpeedValueText,
-						subtitle: "Mbps",
-						progress: speedTestProgress,
-						isTesting: isSpeedTesting,
-						isFinished: speedTestResult != nil,
-						action: {
-							Task {
-								await runSpeedTest()
-							}
-						}
-					)
-
-					Spacer()
-				}
-
-				if let speedTestError {
-					Text(speedTestError)
-						.font(.subheadline)
-						.foregroundStyle(MiraTheme.ColorToken.destructive)
+		SpeedTestCard(
+			displayedSpeedValueText: displayedSpeedValueText,
+			progress: speedTestProgress,
+			isTesting: isSpeedTesting,
+			isFinished: speedTestResult != nil,
+			errorMessage: speedTestError,
+			onStartTest: {
+				Task {
+					await runSpeedTest()
 				}
 			}
-		}
+		)
 	}
 
 	private func connect() async {
@@ -167,14 +129,12 @@ struct DashboardView: View {
 		}
 
 		do {
-			let success = try await authService.authenticate(
+			try await authService.authenticate(
 				reason: "Authenticate to securely connect to university Wi-Fi."
 			)
 
-			if success {
-				userAllowsAutoReconnect = true
-				connectionStatus = .connected
-			}
+			userAllowsAutoReconnect = true
+			connectionStatus = .connected
 		} catch {
 			userAllowsAutoReconnect = false
 			connectionStatus = .rejected
@@ -202,7 +162,6 @@ struct DashboardView: View {
 		isSpeedTesting = true
 		speedTestError = nil
 		speedTestResult = nil
-		currentSpeedMbps = 0
 		currentSpeedValueText = "0.0"
 		speedTestProgress = 0
 
@@ -214,13 +173,11 @@ struct DashboardView: View {
 			for try await event in speedTestService.runDownloadTest() {
 				switch event {
 				case .progress(let progress):
-					currentSpeedMbps = progress.currentMegabitsPerSecond
 					currentSpeedValueText = progress.speedValueText
 					speedTestProgress = progress.progress
 
 				case .completed(let result):
 					speedTestResult = result
-					currentSpeedMbps = result.finalMegabitsPerSecond
 					currentSpeedValueText = result.speedValueText
 					speedTestProgress = 1
 				}
@@ -228,7 +185,6 @@ struct DashboardView: View {
 		} catch {
 			speedTestError = error.localizedDescription
 			speedTestProgress = 0
-			currentSpeedMbps = 0
 			currentSpeedValueText = "0.0"
 		}
 	}

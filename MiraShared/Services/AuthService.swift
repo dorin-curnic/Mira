@@ -16,7 +16,9 @@ enum AuthError: Error, LocalizedError {
 }
 
 final class AuthService {
-	func authenticate(reason: String = "Authenticate to continue with Mira") async throws -> Bool {
+	func authenticate(
+		reason: String = "Authenticate to continue with Mira"
+	) async throws {
 		let context = LAContext()
 		context.localizedCancelTitle = "Cancel"
 
@@ -28,13 +30,13 @@ final class AuthService {
 			)
 		}
 
-		return try await withCheckedThrowingContinuation { continuation in
+		try await withCheckedThrowingContinuation { continuation in
 			context.evaluatePolicy(
 				.deviceOwnerAuthentication,
 				localizedReason: reason
 			) { success, error in
 				if success {
-					continuation.resume(returning: true)
+					continuation.resume()
 				} else {
 					continuation.resume(
 						throwing: AuthError.failed(

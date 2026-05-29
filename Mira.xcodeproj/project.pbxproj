@@ -12,9 +12,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		DF3B46122FC726D50071E6D9 /* Mira_macOS */ = {
+		DF3B46122FC726D50071E6D9 /* MiramacOS */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Mira_macOS;
+			path = MiramacOS;
 			sourceTree = "<group>";
 		};
 		DF7EED802FC733BB00A64B1E /* MiraShared */ = {
@@ -22,9 +22,9 @@
 			path = MiraShared;
 			sourceTree = "<group>";
 		};
-		DF7EED852FC733C700A64B1E /* Mira_iOS */ = {
+		DF7EED852FC733C700A64B1E /* MiraiOS */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Mira_iOS;
+			path = MiraiOS;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -51,8 +51,8 @@
 			isa = PBXGroup;
 			children = (
 				DF3B45E42FC725B50071E6D9 /* Products */,
-				DF7EED852FC733C700A64B1E /* Mira_iOS */,
-				DF3B46122FC726D50071E6D9 /* Mira_macOS */,
+				DF7EED852FC733C700A64B1E /* MiraiOS */,
+				DF3B46122FC726D50071E6D9 /* MiramacOS */,
 				DF7EED802FC733BB00A64B1E /* MiraShared */,
 			);
 			sourceTree = "<group>";
@@ -83,7 +83,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				DF7EED802FC733BB00A64B1E /* MiraShared */,
-				DF7EED852FC733C700A64B1E /* Mira_iOS */,
+				DF7EED852FC733C700A64B1E /* MiraiOS */,
 			);
 			name = Mira_iOS;
 			packageProductDependencies = (
@@ -105,7 +105,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				DF3B46122FC726D50071E6D9 /* Mira_macOS */,
+				DF3B46122FC726D50071E6D9 /* MiramacOS */,
 				DF7EED802FC733BB00A64B1E /* MiraShared */,
 			);
 			name = Mira_macOS;

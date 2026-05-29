@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct MiraMacOSApp: App {
+struct MiramacOSApp: App {
 	var body: some Scene {
 		WindowGroup {
 			ContentView()
