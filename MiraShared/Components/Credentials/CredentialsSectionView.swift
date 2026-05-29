@@ -104,7 +104,7 @@ struct CredentialsSectionView: View {
 			Text(field.copyLabel)
 				.font(.subheadline)
 				.fontWeight(.medium)
-				.foregroundStyle(.black)
+				.foregroundStyle(MiraTheme.ColorToken.foreground)
 				.padding(.horizontal, 24)
 				.padding(.vertical, 12)
 				.frame(minHeight: 44)

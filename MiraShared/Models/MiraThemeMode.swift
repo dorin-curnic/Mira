@@ -1,4 +1,4 @@
-import Foundation
+import SwiftUI
 
 enum MiraThemeMode: String, CaseIterable, Identifiable {
 	case system = "System"
@@ -15,6 +15,17 @@ enum MiraThemeMode: String, CaseIterable, Identifiable {
 			return "sun.max"
 		case .dark:
 			return "moon"
+		}
+	}
+
+	var colorScheme: ColorScheme? {
+		switch self {
+		case .system:
+			return nil
+		case .light:
+			return .light
+		case .dark:
+			return .dark
 		}
 	}
 }

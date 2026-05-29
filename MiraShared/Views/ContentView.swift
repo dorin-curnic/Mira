@@ -2,19 +2,50 @@ import SwiftUI
 
 struct ContentView: View {
 	@State private var selectedPage: MiraPage = .dashboard
-	@State private var selectedTheme: MiraThemeMode = .system
-	@State private var selectedLanguage: MiraLanguage = .english
+	@AppStorage("selectedTheme") private var selectedThemeRawValue = MiraThemeMode.system.rawValue
+	@AppStorage("selectedLanguage") private var selectedLanguageRawValue = MiraLanguage.english.rawValue
 
 	@StateObject private var networkUsageService = NetworkUsageService()
 
 	var body: some View {
 		rootLayout
+			.preferredColorScheme(selectedTheme.colorScheme)
 			.onAppear {
 				networkUsageService.start()
 			}
 			.onDisappear {
 				networkUsageService.stop()
 			}
+	}
+
+	private var selectedTheme: MiraThemeMode {
+		MiraThemeMode(rawValue: selectedThemeRawValue) ?? .system
+	}
+
+	private var selectedLanguage: MiraLanguage {
+		MiraLanguage(rawValue: selectedLanguageRawValue) ?? .english
+	}
+
+	private var selectedThemeBinding: Binding<MiraThemeMode> {
+		Binding(
+			get: {
+				selectedTheme
+			},
+			set: {
+				selectedThemeRawValue = $0.rawValue
+			}
+		)
+	}
+
+	private var selectedLanguageBinding: Binding<MiraLanguage> {
+		Binding(
+			get: {
+				selectedLanguage
+			},
+			set: {
+				selectedLanguageRawValue = $0.rawValue
+			}
+		)
 	}
 
 	@ViewBuilder
@@ -29,8 +60,8 @@ struct ContentView: View {
 	private var topBar: some View {
 		VStack(spacing: 0) {
 			MiraTopBar(
-				selectedTheme: $selectedTheme,
-				selectedLanguage: $selectedLanguage
+				selectedTheme: selectedThemeBinding,
+				selectedLanguage: selectedLanguageBinding
 			)
 			.padding(.horizontal, MiraTheme.Spacing.xl)
 			.padding(.vertical, MiraTheme.Spacing.md)

@@ -1,5 +1,11 @@
 import SwiftUI
 
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
+
 enum MiraTheme {
 	enum Radius {
 		static let sm: CGFloat = 6
@@ -19,59 +25,203 @@ enum MiraTheme {
 	}
 
 	enum ColorToken {
-		static let background = Color(hex: 0xffffff)
-		static let foreground = Color(hex: 0x09090b)
+		static let background = Color.dynamic(
+			light: Color(hex: 0xFFFFFF),
+			dark: Color(hex: 0x09090B)
+		)
 
-		static let card = Color(hex: 0xffffff)
-		static let cardForeground = Color(hex: 0x09090b)
+		static let foreground = Color.dynamic(
+			light: Color(hex: 0x09090B),
+			dark: Color(hex: 0xFAFAFA)
+		)
 
-		static let primary = Color(hex: 0xc6005c)
-		static let primaryForeground = Color(hex: 0xfdf2f8)
+		static let card = Color.dynamic(
+			light: Color(hex: 0xFFFFFF),
+			dark: Color(hex: 0x18181B)
+		)
 
-		static let secondary = Color(hex: 0xf4f4f5)
-		static let secondaryForeground = Color(hex: 0x18181b)
+		static let cardForeground = Color.dynamic(
+			light: Color(hex: 0x09090B),
+			dark: Color(hex: 0xFAFAFA)
+		)
 
-		static let muted = Color(hex: 0xf4f4f5)
-		static let mutedForeground = Color(hex: 0x71717b)
+		static let popover = Color.dynamic(
+			light: Color(hex: 0xFFFFFF),
+			dark: Color(hex: 0x18181B)
+		)
 
-		static let accent = Color(hex: 0xf4f4f5)
-		static let accentForeground = Color(hex: 0x18181b)
+		static let popoverForeground = Color.dynamic(
+			light: Color(hex: 0x09090B),
+			dark: Color(hex: 0xFAFAFA)
+		)
 
-		static let destructive = Color(hex: 0xdc2626)
-		static let border = Color(hex: 0xe4e4e7)
-		static let input = Color(hex: 0xe4e4e7)
-		static let ring = Color(hex: 0xa1a1aa)
+		static let primary = Color.dynamic(
+			light: Color(hex: 0xC6005C),
+			dark: Color(hex: 0xA3004C)
+		)
 
-		static let chart1 = Color(hex: 0xffd230)
-		static let chart2 = Color(hex: 0xfe9a00)
-		static let chart3 = Color(hex: 0xe17100)
-		static let chart4 = Color(hex: 0xbb4d00)
-		static let chart5 = Color(hex: 0x973c00)
+		static let primaryForeground = Color.dynamic(
+			light: Color(hex: 0xFDF2F8),
+			dark: Color(hex: 0xFDF2F8)
+		)
 
-		static let darkBackground = Color(hex: 0x09090b)
-		static let darkForeground = Color(hex: 0xfafafa)
-		static let darkCard = Color(hex: 0x18181b)
-		static let darkPrimary = Color(hex: 0xa3004c)
-		static let darkSecondary = Color(hex: 0x27272a)
-		static let darkBorder = Color.white.opacity(0.10)
+		static let secondary = Color.dynamic(
+			light: Color(hex: 0xF4F4F5),
+			dark: Color(hex: 0x27272A)
+		)
+
+		static let secondaryForeground = Color.dynamic(
+			light: Color(hex: 0x18181B),
+			dark: Color(hex: 0xFAFAFA)
+		)
+
+		static let muted = Color.dynamic(
+			light: Color(hex: 0xF4F4F5),
+			dark: Color(hex: 0x27272A)
+		)
+
+		static let mutedForeground = Color.dynamic(
+			light: Color(hex: 0x71717B),
+			dark: Color(hex: 0x9F9FA9)
+		)
+
+		static let accent = Color.dynamic(
+			light: Color(hex: 0xF4F4F5),
+			dark: Color(hex: 0x27272A)
+		)
+
+		static let accentForeground = Color.dynamic(
+			light: Color(hex: 0x18181B),
+			dark: Color(hex: 0xFAFAFA)
+		)
+
+		static let destructive = Color.dynamic(
+			light: Color(hex: 0xE7000B),
+			dark: Color(hex: 0xFF6467)
+		)
+
+		static let border = Color.dynamic(
+			light: Color(hex: 0xE4E4E7),
+			dark: Color.white.opacity(0.10)
+		)
+
+		static let input = Color.dynamic(
+			light: Color(hex: 0xE4E4E7),
+			dark: Color.white.opacity(0.15)
+		)
+
+		static let ring = Color.dynamic(
+			light: Color(hex: 0x9F9FA9),
+			dark: Color(hex: 0x71717B)
+		)
+
+		static let chart1 = Color(hex: 0xFFD230)
+		static let chart2 = Color(hex: 0xFE9A00)
+		static let chart3 = Color(hex: 0xE17100)
+		static let chart4 = Color(hex: 0xBB4D00)
+		static let chart5 = Color(hex: 0x973C00)
+
+		static let sidebar = Color.dynamic(
+			light: Color(hex: 0xFAFAFA),
+			dark: Color(hex: 0x18181B)
+		)
+
+		static let sidebarForeground = Color.dynamic(
+			light: Color(hex: 0x09090B),
+			dark: Color(hex: 0xFAFAFA)
+		)
+
+		static let sidebarPrimary = Color.dynamic(
+			light: Color(hex: 0xE60076),
+			dark: Color(hex: 0xF6339A)
+		)
+
+		static let sidebarPrimaryForeground = Color.dynamic(
+			light: Color(hex: 0xFDF2F8),
+			dark: Color(hex: 0xFDF2F8)
+		)
+
+		static let sidebarAccent = Color.dynamic(
+			light: Color(hex: 0xF4F4F5),
+			dark: Color(hex: 0x27272A)
+		)
+
+		static let sidebarAccentForeground = Color.dynamic(
+			light: Color(hex: 0x18181B),
+			dark: Color(hex: 0xFAFAFA)
+		)
+
+		static let sidebarBorder = Color.dynamic(
+			light: Color(hex: 0xE4E4E7),
+			dark: Color.white.opacity(0.10)
+		)
+
+		static let sidebarRing = Color.dynamic(
+			light: Color(hex: 0x9F9FA9),
+			dark: Color(hex: 0x71717B)
+		)
 	}
 
 	enum Status {
-		static let connectedForeground = Color(red: 94 / 255, green: 194 / 255, blue: 105 / 255)
-		static let connectedBackground = Color(red: 226 / 255, green: 251 / 255, blue: 232 / 255)
-		static let connectedBorder = Color(red: 48 / 255, green: 99 / 255, blue: 57 / 255)
+		static let connectedForeground = Color.dynamic(
+			light: Color(red: 94 / 255, green: 194 / 255, blue: 105 / 255),
+			dark: Color(red: 134 / 255, green: 239 / 255, blue: 172 / 255)
+		)
 
-		static let pendingForeground = Color(red: 233 / 255, green: 162 / 255, blue: 59 / 255)
-		static let pendingBackground = Color(red: 252 / 255, green: 243 / 255, blue: 204 / 255)
-		static let pendingBorder = Color(red: 136 / 255, green: 69 / 255, blue: 29 / 255)
+		static let connectedBackground = Color.dynamic(
+			light: Color(red: 226 / 255, green: 251 / 255, blue: 232 / 255),
+			dark: Color(red: 20 / 255, green: 83 / 255, blue: 45 / 255).opacity(0.35)
+		)
 
-		static let rejectedForeground = Color(red: 221 / 255, green: 82 / 255, blue: 76 / 255)
-		static let rejectedBackground = Color(red: 249 / 255, green: 227 / 255, blue: 226 / 255)
-		static let rejectedBorder = Color(red: 140 / 255, green: 40 / 255, blue: 34 / 255)
+		static let connectedBorder = Color.dynamic(
+			light: Color(red: 48 / 255, green: 99 / 255, blue: 57 / 255),
+			dark: Color(red: 134 / 255, green: 239 / 255, blue: 172 / 255).opacity(0.45)
+		)
 
-		static let disconnectedForeground = Color(red: 108 / 255, green: 114 / 255, blue: 127 / 255)
-		static let disconnectedBackground = Color(red: 243 / 255, green: 244 / 255, blue: 246 / 255)
-		static let disconnectedBorder = Color(red: 57 / 255, green: 65 / 255, blue: 80 / 255)
+		static let pendingForeground = Color.dynamic(
+			light: Color(red: 233 / 255, green: 162 / 255, blue: 59 / 255),
+			dark: Color(red: 251 / 255, green: 191 / 255, blue: 36 / 255)
+		)
+
+		static let pendingBackground = Color.dynamic(
+			light: Color(red: 252 / 255, green: 243 / 255, blue: 204 / 255),
+			dark: Color(red: 113 / 255, green: 63 / 255, blue: 18 / 255).opacity(0.35)
+		)
+
+		static let pendingBorder = Color.dynamic(
+			light: Color(red: 136 / 255, green: 69 / 255, blue: 29 / 255),
+			dark: Color(red: 251 / 255, green: 191 / 255, blue: 36 / 255).opacity(0.45)
+		)
+
+		static let rejectedForeground = Color.dynamic(
+			light: Color(red: 221 / 255, green: 82 / 255, blue: 76 / 255),
+			dark: Color(red: 248 / 255, green: 113 / 255, blue: 113 / 255)
+		)
+
+		static let rejectedBackground = Color.dynamic(
+			light: Color(red: 249 / 255, green: 227 / 255, blue: 226 / 255),
+			dark: Color(red: 127 / 255, green: 29 / 255, blue: 29 / 255).opacity(0.35)
+		)
+
+		static let rejectedBorder = Color.dynamic(
+			light: Color(red: 140 / 255, green: 40 / 255, blue: 34 / 255),
+			dark: Color(red: 248 / 255, green: 113 / 255, blue: 113 / 255).opacity(0.45)
+		)
+
+		static let disconnectedForeground = Color.dynamic(
+			light: Color(red: 108 / 255, green: 114 / 255, blue: 127 / 255),
+			dark: Color(red: 156 / 255, green: 163 / 255, blue: 175 / 255)
+		)
+
+		static let disconnectedBackground = Color.dynamic(
+			light: Color(red: 243 / 255, green: 244 / 255, blue: 246 / 255),
+			dark: Color(red: 55 / 255, green: 65 / 255, blue: 81 / 255).opacity(0.35)
+		)
+
+		static let disconnectedBorder = Color.dynamic(
+			light: Color(red: 57 / 255, green: 65 / 255, blue: 80 / 255),
+			dark: Color(red: 156 / 255, green: 163 / 255, blue: 175 / 255).opacity(0.45)
+		)
 	}
 }
 
@@ -84,5 +234,26 @@ extension Color {
 			blue: Double(hex & 0xff) / 255,
 			opacity: alpha
 		)
+	}
+}
+
+extension Color {
+	static func dynamic(light: Color, dark: Color) -> Color {
+#if os(iOS)
+		return Color(
+			UIColor { traitCollection in
+				traitCollection.userInterfaceStyle == .dark
+				? UIColor(dark)
+				: UIColor(light)
+			}
+		)
+#elseif os(macOS)
+		return Color(
+			NSColor(name: nil) { appearance in
+				let isDark = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+				return isDark ? NSColor(dark) : NSColor(light)
+			}
+		)
+#endif
 	}
 }
