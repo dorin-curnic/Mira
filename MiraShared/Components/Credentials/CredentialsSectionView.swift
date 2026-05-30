@@ -38,15 +38,6 @@ struct CredentialsSectionView: View {
 					value: password,
 					isSensitive: true
 				)
-
-				Divider()
-
-				credentialRow(
-					field: .portal,
-					title: MiraText.portal.localized(language),
-					value: portal,
-					isSensitive: true
-				)
 			}
 		}
 		.overlayPreferenceValue(RowBoundsKey.self) { anchors in
@@ -117,7 +108,9 @@ struct CredentialsSectionView: View {
 		switch field {
 		case .username:
 			return true
-		case .password, .portal:
+		case .password:
+			return revealedFields.contains(field)
+		case .portal:
 			return revealedFields.contains(field)
 		}
 	}

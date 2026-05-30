@@ -10,11 +10,10 @@ struct SettingsView: View {
 	@Environment(\.miraLanguage) private var language
 
 	@State private var credentials: WiFiCredentials?
-	@State private var activeField: CredentialField?
 	@State private var isShowingCredentialsSheet = false
 	@State private var credentialsSheetMode: EditCredentialsSheet.Mode = .add
-	@State private var isShowingDeleteConfirmation = false
 	@State private var isPasswordRevealed = false
+	@State private var isShowingReportForm = false
 
 	private let authService = AuthService()
 	@State private var revealErrorMessage: String?
@@ -22,7 +21,7 @@ struct SettingsView: View {
 	@State private var allowsAutoReconnect = true
 	@State private var requiresAuthenticationBeforeReveal = true
 
-	private let portal = "wifi.university.local"
+	private let portal = "https://sb.sdn.utm.md:19008/portal"
 
 	var body: some View {
 		ScrollView {
@@ -39,9 +38,6 @@ struct SettingsView: View {
 		}
 		.background(MiraTheme.ColorToken.background)
 		.contentShape(Rectangle())
-		.onTapGesture {
-			activeField = nil
-		}
 		.sheet(isPresented: $isShowingCredentialsSheet) {
 			EditCredentialsSheet(
 				mode: credentialsSheetMode,
@@ -56,18 +52,8 @@ struct SettingsView: View {
 				}
 			)
 		}
-		.confirmationDialog(
-			"Delete credentials?",
-			isPresented: $isShowingDeleteConfirmation,
-			titleVisibility: .visible
-		) {
-			Button("Delete Credentials", role: .destructive) {
-				deleteCredentials()
-			}
-
-			Button("Cancel", role: .cancel) {}
-		} message: {
-			Text("This will remove your saved username and password from this device.")
+		.sheet(isPresented: $isShowingReportForm) {
+			ReportProblemSheet()
 		}
 	}
 
@@ -98,52 +84,64 @@ struct SettingsView: View {
 
 				Divider()
 
-				HStack {
-					VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-						Text("Portal")
-							.font(.subheadline)
-							.fontWeight(.semibold)
-							.foregroundStyle(MiraTheme.ColorToken.foreground)
+				Button {
+					ClipboardService.copy(portal)
+				} label: {
+					HStack {
+						VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
+							Text(MiraText.portal.localized(language))
+								.font(.subheadline)
+								.fontWeight(.semibold)
+								.foregroundStyle(MiraTheme.ColorToken.foreground)
 
-						Text(portal)
-							.font(.caption)
+							Text(portal)
+								.font(.caption)
+								.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
+								.lineLimit(1)
+								.truncationMode(.middle)
+						}
+
+						Spacer()
+
+						Image(systemName: "doc.on.doc")
 							.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 					}
-
-					Spacer()
-
-					Image(systemName: "link")
-						.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
+					.contentShape(Rectangle())
 				}
+				.buttonStyle(.plain)
 			}
 		}
 	}
 
 	@ViewBuilder
 	private var credentialsSection: some View {
-		SettingsSectionView(title: "Credentials") {
-			if let credentials {
-				VStack(alignment: .leading, spacing: MiraTheme.Spacing.md) {
-					HStack(alignment: .center) {
-						Spacer()
-
-						Button {
-							openEditCredentials()
-						} label: {
-							Text("Edit")
-								.font(.subheadline)
-								.fontWeight(.semibold)
-						}
+		if let credentials {
+			SettingsSectionView(
+				title: "Credentials",
+				trailing: {
+					Button {
+						openEditCredentials()
+					} label: {
+						Text("Edit")
+							.font(.subheadline)
+							.fontWeight(.semibold)
 					}
-
-					Divider()
-
+					.buttonStyle(.plain)
+					.foregroundStyle(MiraTheme.ColorToken.primary)
+				}
+			) {
+				VStack(alignment: .leading, spacing: MiraTheme.Spacing.md) {
 					SavedCredentialsView(
 						credentials: credentials,
 						isPasswordRevealed: isPasswordRevealed,
 						onPasswordTap: {
 							Task {
 								await revealPassword()
+							}
+						},
+						onCopy: { field in
+							Task {
+								await copyCredential(field)
 							}
 						}
 					)
@@ -154,9 +152,39 @@ struct SettingsView: View {
 							.foregroundStyle(MiraTheme.ColorToken.destructive)
 					}
 				}
-			} else {
+			}
+		} else {
+			SettingsSectionView(title: "Credentials") {
 				emptyCredentialsView
 			}
+		}
+	}
+
+	private func copyCredential(_ field: CredentialField) async {
+		guard let credentials else {
+			return
+		}
+
+		switch field {
+		case .username:
+			ClipboardService.copy(credentials.username)
+
+		case .password:
+			do {
+				if requiresAuthenticationBeforeReveal {
+					try await authService.authenticate(
+						reason: "Authenticate to copy your saved password."
+					)
+				}
+
+				ClipboardService.copy(credentials.password)
+				revealErrorMessage = nil
+			} catch {
+				revealErrorMessage = error.localizedDescription
+			}
+
+		case .portal:
+			break
 		}
 	}
 
@@ -212,7 +240,7 @@ struct SettingsView: View {
 				Divider()
 
 				Button {
-					openURL("https://github.com/dorin-curnic/Mira/issues")
+					isShowingReportForm = true
 				} label: {
 					settingsActionRow(
 						title: "Report Form",
@@ -307,7 +335,6 @@ struct SettingsView: View {
 
 	private func deleteCredentials() {
 		credentials = nil
-		activeField = nil
 		isPasswordRevealed = false
 		revealErrorMessage = nil
 	}

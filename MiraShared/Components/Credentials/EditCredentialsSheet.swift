@@ -174,8 +174,8 @@ struct EditCredentialsSheet: View {
 				.foregroundStyle(MiraTheme.ColorToken.foreground)
 
 			TextField("name.surname@xyz.utm.md", text: $username)
-				.textInputAutocapitalization(.never)
 #if os(iOS)
+				.textInputAutocapitalization(.never)
 				.keyboardType(.emailAddress)
 				.autocorrectionDisabled()
 #endif
@@ -233,8 +233,8 @@ struct EditCredentialsSheet: View {
 						SecureField("Password", text: $password)
 					}
 				}
-				.textInputAutocapitalization(.never)
 #if os(iOS)
+				.textInputAutocapitalization(.never)
 				.autocorrectionDisabled()
 #endif
 				.tint(MiraTheme.ColorToken.primary)
