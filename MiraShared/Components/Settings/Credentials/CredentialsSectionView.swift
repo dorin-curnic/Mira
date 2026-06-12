@@ -1,97 +1,73 @@
 import SwiftUI
 
-private struct RowBoundsKey: PreferenceKey {
-	static var defaultValue: [CredentialField: Anchor<CGRect>] = [:]
-
-	static func reduce(
-		value: inout [CredentialField: Anchor<CGRect>],
-		nextValue: () -> [CredentialField: Anchor<CGRect>]
-	) {
-		value.merge(nextValue(), uniquingKeysWith: { $1 })
-	}
-}
-
 struct CredentialsSectionView: View {
-	let username: String
-	let password: String
-	let portal: String
-
 	@Environment(\.miraLanguage) private var language
-	@Binding var activeField: CredentialField?
-	@State private var revealedFields: Set<CredentialField> = []
+
+	let credentials: WiFiCredentials
+	let isPasswordRevealed: Bool
+	let onRevealPassword: () -> Void
+	let onCopy: (CredentialField) -> Void
+	let onEdit: () -> Void
+
+	@State private var activeField: CredentialField?
 
 	var body: some View {
-		MiraCard {
-			VStack(alignment: .leading, spacing: 0) {
-				credentialRow(
-					field: .username,
-					title: MiraText.username.localized(language),
-					value: username,
-					isSensitive: false
-				)
+		VStack(alignment: .leading, spacing: 0) {
+			actionRow
 
-				Divider()
+			Divider()
 
-				credentialRow(
-					field: .password,
-					title: MiraText.password.localized(language),
-					value: password,
-					isSensitive: true
-				)
-			}
-		}
-		.overlayPreferenceValue(RowBoundsKey.self) { anchors in
-			GeometryReader { geometry in
-				if let field = activeField, let anchor = anchors[field] {
-					floatingCopyButton(for: field)
-						.fixedSize()
-						.position(
-							x: geometry.size.width * 0.62,
-							y: geometry[anchor].minY - 18
-						)
-						.transition(
-							.asymmetric(
-								insertion: .scale(scale: 0.92)
-									.combined(with: .opacity),
-								removal: .identity
-							)
-						)
-						.zIndex(10)
-				}
-			}
-			.animation(
-				.spring(response: 0.22, dampingFraction: 0.68),
-				value: activeField
+			credentialRow(
+				field: .username,
+				title: MiraText.username.localized(language),
+				value: credentials.username,
+				isSensitive: false,
+				isRevealed: true
+			)
+
+			Divider()
+
+			credentialRow(
+				field: .password,
+				title: MiraText.password.localized(language),
+				value: credentials.password,
+				isSensitive: true,
+				isRevealed: isPasswordRevealed
 			)
 		}
 	}
 
-	private func credentialRow(
-		field: CredentialField,
-		title: String,
-		value: String,
-		isSensitive: Bool
-	) -> some View {
-		CredentialFieldRow(
-			field: field,
-			title: title,
-			value: value,
-			isSensitive: isSensitive,
-			isRevealed: isRevealed(field),
-			isActive: activeField == field,
-			onTap: {
-				activateField(field, reveal: isSensitive)
+	private var actionRow: some View {
+		HStack {
+			Spacer()
+
+			if let activeField {
+				copyButton(for: activeField)
+			} else {
+				editButton
 			}
-		)
-		.anchorPreference(key: RowBoundsKey.self, value: .bounds) {
-			[field: $0]
 		}
+		.frame(height: 44)
 	}
 
-	@ViewBuilder
-	private func floatingCopyButton(for field: CredentialField) -> some View {
+	private var editButton: some View {
 		Button {
-			performCopy(for: field)
+			onEdit()
+		} label: {
+			Image(systemName: "pencil")
+				.font(.subheadline)
+				.fontWeight(.semibold)
+				.foregroundStyle(MiraTheme.ColorToken.primary)
+				.frame(width: 36, height: 36)
+		}
+		.buttonStyle(.plain)
+		.accessibilityLabel("Edit credentials")
+	}
+
+	private func copyButton(for field: CredentialField) -> some View {
+		Button {
+			onCopy(field)
+			activeField = nil
 		} label: {
 			Text(field.copyLabel(language: language))
 				.font(.subheadline)
@@ -104,38 +80,41 @@ struct CredentialsSectionView: View {
 		.buttonStyle(.miraGlassCopy)
 	}
 
-	private func isRevealed(_ field: CredentialField) -> Bool {
+	private func credentialRow(
+		field: CredentialField,
+		title: String,
+		value: String,
+		isSensitive: Bool,
+		isRevealed: Bool
+	) -> some View {
+		CredentialFieldRow(
+			field: field,
+			title: title,
+			value: value,
+			isSensitive: isSensitive,
+			isRevealed: isRevealed,
+			isActive: activeField == field,
+			onTap: {
+				handleTap(on: field)
+			}
+		)
+	}
+
+	private func handleTap(on field: CredentialField) {
 		switch field {
 		case .username:
-			return true
+			toggleCopyButton(for: .username)
+
 		case .password:
-			return revealedFields.contains(field)
-		case .portal:
-			return revealedFields.contains(field)
+			if isPasswordRevealed {
+				toggleCopyButton(for: .password)
+			} else {
+				onRevealPassword()
+			}
 		}
 	}
 
-	private func activateField(_ field: CredentialField, reveal: Bool = false) {
+	private func toggleCopyButton(for field: CredentialField) {
 		activeField = activeField == field ? nil : field
-
-		if reveal {
-			revealedFields.insert(field)
-		}
-	}
-
-	private func value(for field: CredentialField) -> String {
-		switch field {
-		case .username:
-			return username
-		case .password:
-			return password
-		case .portal:
-			return portal
-		}
-	}
-
-	private func performCopy(for field: CredentialField) {
-		ClipboardService.copy(value(for: field))
-		activeField = nil
 	}
 }

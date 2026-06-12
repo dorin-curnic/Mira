@@ -8,6 +8,7 @@ import AppKit
 
 struct SettingsView: View {
 	@Environment(\.miraLanguage) private var language
+	@Environment(\.scenePhase) private var scenePhase
 
 	@State private var credentials: WiFiCredentials?
 	@State private var isShowingCredentialsSheet = false
@@ -37,6 +38,11 @@ struct SettingsView: View {
 			.frame(maxWidth: .infinity)
 		}
 		.background(MiraTheme.ColorToken.background)
+		.onChange(of: scenePhase) { _, newPhase in
+			if newPhase != .active {
+				hideSensitiveData()
+			}
+		}
 		.contentShape(Rectangle())
 		.sheet(isPresented: $isShowingCredentialsSheet) {
 			EditCredentialsSheet(
@@ -44,8 +50,7 @@ struct SettingsView: View {
 				initialCredentials: credentials,
 				onSave: { newCredentials in
 					credentials = newCredentials
-					isPasswordRevealed = false
-					revealErrorMessage = nil
+					hideSensitiveData()
 				},
 				onDelete: {
 					deleteCredentials()
@@ -116,25 +121,11 @@ struct SettingsView: View {
 	@ViewBuilder
 	private var credentialsSection: some View {
 		if let credentials {
-			SettingsSectionView(
-				title: "Credentials",
-				trailing: {
-					Button {
-						openEditCredentials()
-					} label: {
-						Text("Edit")
-							.font(.subheadline)
-							.fontWeight(.semibold)
-					}
-					.buttonStyle(.plain)
-					.foregroundStyle(MiraTheme.ColorToken.primary)
-				}
-			) {
-				VStack(alignment: .leading, spacing: MiraTheme.Spacing.md) {
-					SavedCredentialsView(
+			SettingsSectionView(title: "Credentials") {
+					CredentialsSectionView(
 						credentials: credentials,
 						isPasswordRevealed: isPasswordRevealed,
-						onPasswordTap: {
+						onRevealPassword: {
 							Task {
 								await revealPassword()
 							}
@@ -143,6 +134,9 @@ struct SettingsView: View {
 							Task {
 								await copyCredential(field)
 							}
+						},
+						onEdit: {
+							openEditCredentials()
 						}
 					)
 
@@ -150,8 +144,9 @@ struct SettingsView: View {
 						Text(revealErrorMessage)
 							.font(.caption)
 							.foregroundStyle(MiraTheme.ColorToken.destructive)
+							.padding(.top, MiraTheme.Spacing.sm)
 					}
-				}
+				
 			}
 		} else {
 			SettingsSectionView(title: "Credentials") {
@@ -170,21 +165,13 @@ struct SettingsView: View {
 			ClipboardService.copy(credentials.username)
 
 		case .password:
-			do {
-				if requiresAuthenticationBeforeReveal {
-					try await authService.authenticate(
-						reason: "Authenticate to copy your saved password."
-					)
-				}
-
-				ClipboardService.copy(credentials.password)
-				revealErrorMessage = nil
-			} catch {
-				revealErrorMessage = error.localizedDescription
+			guard isPasswordRevealed else {
+				await revealPassword()
+				return
 			}
 
-		case .portal:
-			break
+			ClipboardService.copy(credentials.password)
+			revealErrorMessage = nil
 		}
 	}
 
@@ -335,6 +322,10 @@ struct SettingsView: View {
 
 	private func deleteCredentials() {
 		credentials = nil
+		hideSensitiveData()
+	}
+
+	private func hideSensitiveData() {
 		isPasswordRevealed = false
 		revealErrorMessage = nil
 	}

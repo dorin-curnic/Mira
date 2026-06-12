@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct MiraGlassCopyButtonStyle: ButtonStyle {
+struct MiraGlassButtonStyle: ButtonStyle {
 	func makeBody(configuration: Configuration) -> some View {
 		if #available(iOS 26.0, macOS 26.0, *) {
 			configuration.label
@@ -27,8 +27,8 @@ struct MiraGlassCopyButtonStyle: ButtonStyle {
 	}
 }
 
-extension ButtonStyle where Self == MiraGlassCopyButtonStyle {
-	static var miraGlassCopy: MiraGlassCopyButtonStyle {
-		MiraGlassCopyButtonStyle()
+extension ButtonStyle where Self == MiraGlassButtonStyle {
+	static var miraGlassCopy: MiraGlassButtonStyle {
+		MiraGlassButtonStyle()
 	}
 }
