@@ -13,9 +13,18 @@ struct CredentialsSectionView: View {
 
 	var body: some View {
 		VStack(alignment: .leading, spacing: 0) {
-			actionRow
-
-			Divider()
+			VStack(spacing: 0) {
+				Image("utm_logo")
+					.resizable()
+					.scaledToFit()
+					.frame(width: 200, height: 100)
+				Text("Technical University of Moldova")
+					.font(.title3)
+					.fontWeight(.heavy)
+					.multilineTextAlignment(.center)
+			}
+			.frame(maxWidth: .infinity, alignment: .center)
+			.padding(.bottom, 40)
 
 			credentialRow(
 				field: .username,

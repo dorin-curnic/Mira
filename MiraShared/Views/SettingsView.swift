@@ -93,23 +93,18 @@ struct SettingsView: View {
 					ClipboardService.copy(portal)
 				} label: {
 					HStack {
-						VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-							Text(MiraText.portal.localized(language))
-								.font(.subheadline)
-								.fontWeight(.semibold)
-								.foregroundStyle(MiraTheme.ColorToken.foreground)
+						Text(MiraText.portal.localized(language))
+							.font(.subheadline)
+							.fontWeight(.semibold)
+							.foregroundStyle(MiraTheme.ColorToken.foreground)
+							.fixedSize(horizontal: true, vertical: false)
 
-							Text(portal)
-								.font(.caption)
-								.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-								.lineLimit(1)
-								.truncationMode(.middle)
-						}
+						Spacer(minLength: MiraTheme.Spacing.md)
 
-						Spacer()
-
-						Image(systemName: "doc.on.doc")
+						Text(portal)
+							.font(.caption)
 							.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
+							.multilineTextAlignment(.leading)
 					}
 					.contentShape(Rectangle())
 				}
@@ -122,31 +117,30 @@ struct SettingsView: View {
 	private var credentialsSection: some View {
 		if let credentials {
 			SettingsSectionView(title: "Credentials") {
-					CredentialsSectionView(
-						credentials: credentials,
-						isPasswordRevealed: isPasswordRevealed,
-						onRevealPassword: {
-							Task {
-								await revealPassword()
-							}
-						},
-						onCopy: { field in
-							Task {
-								await copyCredential(field)
-							}
-						},
-						onEdit: {
-							openEditCredentials()
+				CredentialsSectionView(
+					credentials: credentials,
+					isPasswordRevealed: isPasswordRevealed,
+					onRevealPassword: {
+						Task {
+							await revealPassword()
 						}
-					)
-
-					if let revealErrorMessage {
-						Text(revealErrorMessage)
-							.font(.caption)
-							.foregroundStyle(MiraTheme.ColorToken.destructive)
-							.padding(.top, MiraTheme.Spacing.sm)
+					},
+					onCopy: { field in
+						Task {
+							await copyCredential(field)
+						}
+					},
+					onEdit: {
+						openEditCredentials()
 					}
-				
+				)
+
+				if let revealErrorMessage {
+					Text(revealErrorMessage)
+						.font(.caption)
+						.foregroundStyle(MiraTheme.ColorToken.destructive)
+						.padding(.top, MiraTheme.Spacing.sm)
+				}
 			}
 		} else {
 			SettingsSectionView(title: "Credentials") {
@@ -214,12 +208,13 @@ struct SettingsView: View {
 		SettingsSectionView(title: "Support") {
 			VStack(spacing: 0) {
 				Button {
-					openURL("https://github.com/dorin-curnic/Mira")
+					isShowingReportForm = true
 				} label: {
 					settingsActionRow(
-						title: "GitHub Repository",
-						subtitle: "Open the Mira source code.",
-						icon: "chevron.left.forwardslash.chevron.right"
+						title: "Report Form",
+						subtitle: "Report a bug or suggest an improvement.",
+						icon: "exclamationmark.bubble",
+						trailingIcon: "pencil.and.list.clipboard"
 					)
 				}
 				.buttonStyle(.plain)
@@ -227,12 +222,12 @@ struct SettingsView: View {
 				Divider()
 
 				Button {
-					isShowingReportForm = true
+					openURL("https://github.com/dorin-curnic/Mira")
 				} label: {
 					settingsActionRow(
-						title: "Report Form",
-						subtitle: "Report a bug or suggest an improvement.",
-						icon: "exclamationmark.bubble"
+						title: "GitHub Repository",
+						subtitle: "Open the Mira source code.",
+						icon: "chevron.left.forwardslash.chevron.right"
 					)
 				}
 				.buttonStyle(.plain)
@@ -278,10 +273,12 @@ struct SettingsView: View {
 	private func settingsActionRow(
 		title: String,
 		subtitle: String,
-		icon: String
+		icon: String,
+		trailingIcon: String = "arrow.up.right"
 	) -> some View {
 		HStack(spacing: MiraTheme.Spacing.md) {
 			Image(systemName: icon)
+				.font(.subheadline)
 				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 				.frame(width: 24)
 
@@ -298,9 +295,11 @@ struct SettingsView: View {
 
 			Spacer()
 
-			Image(systemName: "arrow.up.right")
-				.font(.caption)
+			Image(systemName: trailingIcon)
+				.font(.subheadline)
+				.fontWeight(.medium)
 				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
+				.frame(width: 24)
 		}
 		.padding(.vertical, MiraTheme.Spacing.md)
 		.contentShape(Rectangle())

@@ -46,7 +46,7 @@ struct CredentialFieldRow: View {
 
 	private var titleText: some View {
 		Text(title)
-			.font(.body)
+			.font(.subheadline)
 			.fontWeight(.semibold)
 			.foregroundStyle(MiraTheme.ColorToken.foreground)
 			.fixedSize(horizontal: true, vertical: false)
@@ -54,7 +54,7 @@ struct CredentialFieldRow: View {
 
 	private var valueText: some View {
 		Text(displayValue)
-			.font(isHiddenSensitiveValue ? .title3 : .body)
+			.font(isHiddenSensitiveValue ? .subheadline : .caption)
 			.fontWeight(isHiddenSensitiveValue ? .black : .semibold)
 			.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 			.multilineTextAlignment(.leading)
