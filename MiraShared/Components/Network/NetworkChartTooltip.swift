@@ -9,7 +9,7 @@ struct NetworkChartTooltip: View {
 	var body: some View {
 		VStack(alignment: .leading, spacing: 6) {
 			Text(point.timestamp, format: .dateTime.hour().minute().second())
-				.font(.caption)
+				.font(MiraTheme.Typography.rowSubtitle)
 				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 
 			HStack(spacing: 6) {
@@ -18,12 +18,12 @@ struct NetworkChartTooltip: View {
 					.frame(width: 8, height: 8)
 
 				Text(kind.title(language: language))
-					.font(.caption)
+					.font(MiraTheme.Typography.rowSubtitle)
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 
 				Text(ByteFormatters.speed(kind.speed(from: point)))
-					.font(.caption)
-					.fontWeight(.semibold)
+					.font(MiraTheme.Typography.rowSubtitle)
+					.fontWeight(MiraTheme.Typography.rowTitleWeight)
 					.foregroundStyle(MiraTheme.ColorToken.foreground)
 			}
 		}

@@ -12,8 +12,8 @@ struct MiraBadge: View {
 				.frame(width: 7, height: 7)
 
 			Text(status.displayText, language: language)
-				.font(.caption)
-				.fontWeight(.medium)
+				.font(MiraTheme.Typography.badge)
+				.fontWeight(MiraTheme.Typography.badgeWeight)
 		}
 		.foregroundStyle(status.foregroundColor)
 		.padding(.horizontal, MiraTheme.Spacing.md)

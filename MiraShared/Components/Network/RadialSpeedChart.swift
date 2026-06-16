@@ -63,13 +63,13 @@ struct RadialSpeedChart: View {
 	private var centerText: some View {
 		VStack(spacing: 6) {
 			Text(valueText)
-				.font(.system(size: 42, weight: .bold, design: .rounded))
+				.font(MiraTheme.Typography.metricValue)
 				.foregroundStyle(MiraTheme.ColorToken.foreground)
 				.monospacedDigit()
 
 			Text(subtitle)
-				.font(.subheadline)
-				.fontWeight(.medium)
+				.font(MiraTheme.Typography.metricLabel)
+				.fontWeight(MiraTheme.Typography.metricLabelWeight)
 				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 		}
 	}

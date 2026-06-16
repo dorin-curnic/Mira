@@ -22,8 +22,8 @@ struct MiraTopBar: View {
 			Spacer()
 
 			Text(.appName, language: language)
-				.font(.title2)
-				.fontWeight(.semibold)
+				.font(MiraTheme.Typography.appTitle)
+				.fontWeight(MiraTheme.Typography.appTitleWeight)
 				.foregroundStyle(MiraTheme.ColorToken.foreground)
 
 			Spacer()
@@ -49,8 +49,8 @@ struct MiraTopBar: View {
 			}
 		} label: {
 			Text(selectedLanguage.shortName)
-				.font(.subheadline)
-				.fontWeight(.medium)
+				.font(MiraTheme.Typography.rowValue)
+				.fontWeight(MiraTheme.Typography.rowValueWeight)
 				.foregroundStyle(MiraTheme.ColorToken.foreground)
 				.padding(.horizontal, MiraTheme.Spacing.md)
 				.padding(.vertical, MiraTheme.Spacing.sm)
@@ -83,7 +83,7 @@ struct MiraTopBar: View {
 			}
 		} label: {
 			Image(systemName: selectedThemeIcon)
-				.font(.subheadline)
+				.font(MiraTheme.Typography.icon)
 				.foregroundStyle(MiraTheme.ColorToken.foreground)
 				.frame(width: 36, height: 36)
 				.background(MiraTheme.ColorToken.secondary)

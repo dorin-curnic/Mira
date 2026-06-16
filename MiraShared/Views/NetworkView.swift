@@ -7,31 +7,19 @@ struct NetworkView: View {
 
 	var body: some View {
 		GeometryReader { geometry in
-			ScrollView {
-				VStack(alignment: .leading, spacing: MiraTheme.Spacing.xl) {
-					pageHeader
-					connectionStatusCard
-					trafficCharts(isCompact: geometry.size.width < 640)
-				}
-				.padding(MiraTheme.Spacing.xl)
-				.frame(maxWidth: 980)
-				.frame(maxWidth: .infinity)
+			MiraPageContainer(maxWidth: MiraTheme.Layout.widePageMaxWidth) {
+				pageHeader
+				connectionStatusCard
+				trafficCharts(isCompact: geometry.size.width < 640)
 			}
-			.background(MiraTheme.ColorToken.background)
 		}
 	}
 
 	private var pageHeader: some View {
-		VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-			Text(.networkTitle, language: language)
-				.font(.largeTitle)
-				.fontWeight(.bold)
-				.foregroundStyle(MiraTheme.ColorToken.foreground)
-
-			Text(.networkSubtitle, language: language)
-				.font(.subheadline)
-				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-		}
+		MiraPageHeader(
+			MiraText.networkTitle.localized(language),
+			subtitle: MiraText.networkSubtitle.localized(language)
+		)
 	}
 
 	private var connectionStatusCard: some View {
@@ -39,18 +27,20 @@ struct NetworkView: View {
 			HStack {
 				VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
 					Text(.wifiName, language: language)
-						.font(.title3)
-						.fontWeight(.semibold)
+						.font(MiraTheme.Typography.cardTitle)
+						.fontWeight(MiraTheme.Typography.cardTitleWeight)
 
 					Text(.wifiConnection, language: language)
-						.font(.subheadline)
+						.font(MiraTheme.Typography.cardSubtitle)
+						.fontWeight(MiraTheme.Typography.cardSubtitleWeight)
 						.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 				}
 
 				Spacer()
 
 				Text(networkUsageService.connectedTimeText)
-					.fontWeight(.medium)
+					.font(MiraTheme.Typography.rowValue)
+					.fontWeight(MiraTheme.Typography.rowValueWeight)
 			}
 		}
 	}

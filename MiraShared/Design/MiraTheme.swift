@@ -223,6 +223,56 @@ enum MiraTheme {
 			dark: Color(red: 156 / 255, green: 163 / 255, blue: 175 / 255).opacity(0.45)
 		)
 	}
+
+	enum Typography {
+		static let appTitle: Font = .title2
+		static let appTitleWeight: Font.Weight = .semibold
+
+		static let pageTitle: Font = .largeTitle
+		static let pageTitleWeight: Font.Weight = .bold
+
+		static let pageSubtitle: Font = .subheadline
+		static let pageSubtitleWeight: Font.Weight = .regular
+
+		static let sectionTitle: Font = .headline
+		static let sectionTitleWeight: Font.Weight = .semibold
+
+		static let cardTitle: Font = .title3
+		static let cardTitleWeight: Font.Weight = .semibold
+
+		static let cardSubtitle: Font = .subheadline
+		static let cardSubtitleWeight: Font.Weight = .regular
+
+		static let rowTitle: Font = .subheadline
+		static let rowTitleWeight: Font.Weight = .semibold
+
+		static let rowValue: Font = .subheadline
+		static let rowValueWeight: Font.Weight = .medium
+
+		static let rowSubtitle: Font = .caption
+		static let rowSubtitleWeight: Font.Weight = .regular
+
+		static let badge: Font = .caption
+		static let badgeWeight: Font.Weight = .medium
+
+		static let button: Font = .subheadline
+		static let buttonWeight: Font.Weight = .semibold
+
+		static let icon: Font = .subheadline
+		static let rowIcon: Font = .subheadline
+		static let cardIcon: Font = .title3
+		
+		static let metricValue: Font = .system(size: 42, weight: .bold, design: .rounded)
+		static let metricLabel: Font = .subheadline
+		static let metricLabelWeight: Font.Weight = .medium
+	}
+
+	enum Layout {
+		static let pageMaxWidth: CGFloat = 820
+		static let widePageMaxWidth: CGFloat = 980
+		static let sheetMaxWidth: CGFloat = 560
+		static let reportSheetMaxWidth: CGFloat = 620
+	}
 }
 
 extension Color {

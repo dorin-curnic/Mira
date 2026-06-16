@@ -24,16 +24,10 @@ struct ReportProblemSheet: View {
 
 	var body: some View {
 		NavigationStack {
-			ScrollView {
-				VStack(alignment: .leading, spacing: MiraTheme.Spacing.xl) {
-					header
-					formCard
-				}
-				.padding(MiraTheme.Spacing.xl)
-				.frame(maxWidth: 620)
-				.frame(maxWidth: .infinity)
+			MiraSheetContainer(maxWidth: MiraTheme.Layout.reportSheetMaxWidth) {
+				header
+				formCard
 			}
-			.background(MiraTheme.ColorToken.background)
 			.navigationTitle("Report Form")
 #if os(iOS)
 			.navigationBarTitleDisplayMode(.inline)
@@ -44,7 +38,7 @@ struct ReportProblemSheet: View {
 						dismiss()
 					} label: {
 						Image(systemName: "xmark")
-							.fontWeight(.semibold)
+							.fontWeight(MiraTheme.Typography.buttonWeight)
 					}
 					.tint(MiraTheme.ColorToken.foreground)
 				}
@@ -54,7 +48,7 @@ struct ReportProblemSheet: View {
 						submit()
 					} label: {
 						Image(systemName: "checkmark")
-							.fontWeight(.semibold)
+							.fontWeight(MiraTheme.Typography.buttonWeight)
 					}
 					.disabled(!canSubmit)
 					.tint(MiraTheme.ColorToken.primary)
@@ -76,16 +70,10 @@ struct ReportProblemSheet: View {
 	}
 
 	private var header: some View {
-		VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-			Text("Report a Problem")
-				.font(.largeTitle)
-				.fontWeight(.bold)
-				.foregroundStyle(MiraTheme.ColorToken.foreground)
-
-			Text("Describe what happened and attach screenshots or videos if needed.")
-				.font(.subheadline)
-				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-		}
+		MiraPageHeader(
+			"Report a Problem",
+			subtitle: "Describe what happened and attach screenshots or videos if needed."
+		)
 	}
 
 	private var formCard: some View {
@@ -106,10 +94,7 @@ struct ReportProblemSheet: View {
 
 	private var categoryField: some View {
 		VStack(alignment: .leading, spacing: MiraTheme.Spacing.sm) {
-			Text("Category")
-				.font(.subheadline)
-				.fontWeight(.semibold)
-				.foregroundStyle(MiraTheme.ColorToken.foreground)
+			MiraFieldLabel("Category")
 
 			Picker("Category", selection: $selectedCategory) {
 				ForEach(ReportCategory.allCases) { category in
@@ -124,10 +109,7 @@ struct ReportProblemSheet: View {
 
 	private var descriptionField: some View {
 		VStack(alignment: .leading, spacing: MiraTheme.Spacing.sm) {
-			Text("Description")
-				.font(.subheadline)
-				.fontWeight(.semibold)
-				.foregroundStyle(MiraTheme.ColorToken.foreground)
+			MiraFieldLabel("Description")
 
 			TextEditor(text: $description)
 				.frame(minHeight: 140)
@@ -154,19 +136,14 @@ struct ReportProblemSheet: View {
 				}
 
 			if isDescriptionInvalid {
-				Text("Description is required.")
-					.font(.caption)
-					.foregroundStyle(MiraTheme.ColorToken.destructive)
+				MiraHelperText("Description is required.", tone: .destructive)
 			}
 		}
 	}
 
 	private var attachmentsField: some View {
 		VStack(alignment: .leading, spacing: MiraTheme.Spacing.sm) {
-			Text("Attachments")
-				.font(.subheadline)
-				.fontWeight(.semibold)
-				.foregroundStyle(MiraTheme.ColorToken.foreground)
+			MiraFieldLabel("Attachments")
 
 			Button {
 				isShowingAttachmentImporter = true
@@ -177,13 +154,11 @@ struct ReportProblemSheet: View {
 
 					VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
 						Text("Add photos or videos")
-							.font(.subheadline)
-							.fontWeight(.semibold)
+							.font(MiraTheme.Typography.rowTitle)
+							.fontWeight(MiraTheme.Typography.rowTitleWeight)
 							.foregroundStyle(MiraTheme.ColorToken.foreground)
 
-						Text(attachmentSummary)
-							.font(.caption)
-							.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
+						MiraHelperText(attachmentSummary)
 					}
 
 					Spacer()
@@ -197,7 +172,7 @@ struct ReportProblemSheet: View {
 				VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
 					ForEach(attachmentURLs, id: \.self) { url in
 						Text(url.lastPathComponent)
-							.font(.caption)
+							.font(MiraTheme.Typography.rowSubtitle)
 							.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 							.lineLimit(1)
 							.truncationMode(.middle)

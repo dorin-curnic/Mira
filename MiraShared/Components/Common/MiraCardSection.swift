@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SettingsSectionView<Content: View, Trailing: View>: View {
+struct MiraCardSection<Content: View, Trailing: View>: View {
 	let title: String
 	let trailing: Trailing
 	let content: Content
@@ -28,8 +28,8 @@ struct SettingsSectionView<Content: View, Trailing: View>: View {
 		VStack(alignment: .leading, spacing: MiraTheme.Spacing.md) {
 			HStack(alignment: .center) {
 				Text(title)
-					.font(.headline)
-					.fontWeight(.semibold)
+					.font(MiraTheme.Typography.sectionTitle)
+					.fontWeight(MiraTheme.Typography.sectionTitleWeight)
 					.foregroundStyle(MiraTheme.ColorToken.foreground)
 
 				Spacer()

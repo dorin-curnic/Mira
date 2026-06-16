@@ -47,21 +47,21 @@ struct NetworkTrafficChart: View {
 		VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
 			HStack(alignment: .firstTextBaseline) {
 				Text(kind.title(language: language))
-					.font(.title3)
-					.fontWeight(.semibold)
+					.font(MiraTheme.Typography.cardTitle)
+					.fontWeight(MiraTheme.Typography.cardTitleWeight)
 					.foregroundStyle(MiraTheme.ColorToken.foreground)
 
 				Spacer()
 
 				Text(speedText)
-					.font(.subheadline)
-					.fontWeight(.semibold)
+					.font(MiraTheme.Typography.rowValue)
+					.fontWeight(MiraTheme.Typography.rowTitleWeight)
 					.foregroundStyle(MiraTheme.ColorToken.foreground)
 			}
 
 			Text("\(MiraText.total.localized(language)): \(totalText)")
-				.font(.caption)
-				.fontWeight(.medium)
+				.font(MiraTheme.Typography.rowSubtitle)
+				.fontWeight(MiraTheme.Typography.rowValueWeight)
 				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 				.padding(.top, MiraTheme.Spacing.xs)
 		}
@@ -94,7 +94,7 @@ struct NetworkTrafficChart: View {
 		.overlay {
 			if filteredPoints.isEmpty {
 				Text(.collectingNetworkData, language: language)
-					.font(.subheadline)
+					.font(MiraTheme.Typography.cardSubtitle)
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 			}
 		}

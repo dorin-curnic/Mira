@@ -13,23 +13,17 @@ struct CredentialFieldRow: View {
 		isSensitive && !isRevealed
 	}
 
-	private var rawDisplayValue: String {
-		isHiddenSensitiveValue
-		? String(repeating: "•", count: max(value.count, 12))
-		: value
-	}
-
 	private var displayValue: String {
-		guard isActive else {
-			return rawDisplayValue
+		if isHiddenSensitiveValue {
+			return String(repeating: "•", count: max(value.count, 12))
 		}
 
-		return rawDisplayValue.addingSoftBreaks(every: 1)
+		return value
 	}
 
 	var body: some View {
 		Button(action: onTap) {
-			HStack(alignment: .top, spacing: 0) {
+			HStack(alignment: .firstTextBaseline, spacing: MiraTheme.Spacing.md) {
 				titleText
 
 				Spacer(minLength: MiraTheme.Spacing.md)
@@ -38,29 +32,35 @@ struct CredentialFieldRow: View {
 			}
 			.padding(.vertical, MiraTheme.Spacing.md)
 			.contentShape(Rectangle())
-			.disableAnimations()
+			.background {
+				if isActive {
+					RoundedRectangle(
+						cornerRadius: MiraTheme.Radius.md,
+						style: .continuous
+					)
+					.fill(MiraTheme.ColorToken.secondary.opacity(0.65))
+				}
+			}
 		}
 		.buttonStyle(.plain)
-		.disableAnimations()
 	}
 
 	private var titleText: some View {
 		Text(title)
-			.font(.subheadline)
-			.fontWeight(.semibold)
+			.font(MiraTheme.Typography.rowTitle)
+			.fontWeight(MiraTheme.Typography.rowTitleWeight)
 			.foregroundStyle(MiraTheme.ColorToken.foreground)
 			.fixedSize(horizontal: true, vertical: false)
 	}
 
 	private var valueText: some View {
 		Text(displayValue)
-			.font(isHiddenSensitiveValue ? .subheadline : .caption)
-			.fontWeight(isHiddenSensitiveValue ? .black : .semibold)
+			.font(MiraTheme.Typography.rowValue)
+			.fontWeight(MiraTheme.Typography.rowValueWeight)
 			.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-			.multilineTextAlignment(.leading)
-			.lineLimit(isActive ? 2 : 1)
-			.truncationMode(.tail)
+			.multilineTextAlignment(.trailing)
+			.lineLimit(1)
+			.truncationMode(.middle)
 			.frame(maxWidth: .infinity, alignment: .trailing)
-			.disableAnimations()
 	}
 }

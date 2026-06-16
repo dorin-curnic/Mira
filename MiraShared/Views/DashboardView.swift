@@ -28,31 +28,19 @@ struct DashboardView: View {
 	private let speedTestService = SpeedTestService()
 
 	var body: some View {
-		ScrollView {
-			VStack(alignment: .leading, spacing: MiraTheme.Spacing.xl) {
-				pageHeader
-				wifiStatusCard
-				connectionActionButton
-				speedTestCard
-			}
-			.padding(MiraTheme.Spacing.xl)
-			.frame(maxWidth: 820)
-			.frame(maxWidth: .infinity)
+		MiraPageContainer(maxWidth: MiraTheme.Layout.pageMaxWidth) {
+			pageHeader
+			wifiStatusCard
+			connectionActionButton
+			speedTestCard
 		}
-		.background(MiraTheme.ColorToken.background)
 	}
 
 	private var pageHeader: some View {
-		VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-			Text(.dashboardTitle, language: language)
-				.font(.largeTitle)
-				.fontWeight(.bold)
-				.foregroundStyle(MiraTheme.ColorToken.foreground)
-
-			Text(.dashboardSubtitle, language: language)
-				.font(.subheadline)
-				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-		}
+		MiraPageHeader(
+			MiraText.dashboardTitle.localized(language),
+			subtitle: MiraText.dashboardSubtitle.localized(language)
+		)
 	}
 
 	private var connectionActionButton: some View {
@@ -73,7 +61,8 @@ struct DashboardView: View {
 						.tint(MiraTheme.ColorToken.primaryForeground)
 				} else {
 					Text(connectionActionTitle)
-						.fontWeight(.semibold)
+						.font(MiraTheme.Typography.button)
+						.fontWeight(MiraTheme.Typography.buttonWeight)
 				}
 
 				Spacer()
@@ -90,8 +79,8 @@ struct DashboardView: View {
 			VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
 				HStack(alignment: .top, spacing: MiraTheme.Spacing.md) {
 					Text(.wifiName, language: language)
-						.font(.title3)
-						.fontWeight(.semibold)
+						.font(MiraTheme.Typography.cardTitle)
+						.fontWeight(MiraTheme.Typography.cardTitleWeight)
 						.foregroundStyle(MiraTheme.ColorToken.foreground)
 
 					Spacer()
@@ -102,8 +91,8 @@ struct DashboardView: View {
 				Spacer()
 
 				Text(.wifiDescription, language: language)
-					.font(.subheadline)
-					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
+					.font(MiraTheme.Typography.cardSubtitle)
+					.fontWeight(MiraTheme.Typography.cardSubtitleWeight)
 			}
 		}
 	}

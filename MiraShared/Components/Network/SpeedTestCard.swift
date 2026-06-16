@@ -34,7 +34,8 @@ struct SpeedTestCard: View {
 
 				if let errorMessage {
 					Text(errorMessage)
-						.font(.subheadline)
+						.font(MiraTheme.Typography.cardSubtitle)
+						.fontWeight(MiraTheme.Typography.cardSubtitleWeight)
 						.foregroundStyle(MiraTheme.ColorToken.destructive)
 				}
 			}
@@ -45,19 +46,20 @@ struct SpeedTestCard: View {
 		HStack(alignment: .top, spacing: MiraTheme.Spacing.md) {
 			VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
 				Text(.speedTestTitle, language: language)
-					.font(.title3)
-					.fontWeight(.semibold)
+					.font(MiraTheme.Typography.cardTitle)
+					.fontWeight(MiraTheme.Typography.cardTitleWeight)
 					.foregroundStyle(MiraTheme.ColorToken.foreground)
 
 				Text(.speedTestDescription, language: language)
-					.font(.subheadline)
+					.font(MiraTheme.Typography.cardSubtitle)
+					.fontWeight(MiraTheme.Typography.cardSubtitleWeight)
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 			}
 
 			Spacer()
 
 			Image(systemName: "speedometer")
-				.font(.title3)
+				.font(MiraTheme.Typography.cardIcon)
 				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 		}
 	}

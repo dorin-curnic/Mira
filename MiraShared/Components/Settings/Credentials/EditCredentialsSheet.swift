@@ -81,17 +81,10 @@ struct EditCredentialsSheet: View {
 
 	var body: some View {
 		NavigationStack {
-			ScrollView {
-				VStack(alignment: .leading, spacing: MiraTheme.Spacing.xl) {
-					header
-					formCard
-					securityNote
-				}
-				.padding(MiraTheme.Spacing.xl)
-				.frame(maxWidth: 560)
-				.frame(maxWidth: .infinity)
+			MiraSheetContainer {
+				header
+				formCard
 			}
-			.background(MiraTheme.ColorToken.background)
 			.navigationTitle(title)
 #if os(iOS)
 			.navigationBarTitleDisplayMode(.inline)
@@ -102,7 +95,7 @@ struct EditCredentialsSheet: View {
 						dismiss()
 					} label: {
 						Image(systemName: "xmark")
-							.fontWeight(.semibold)
+							.fontWeight(MiraTheme.Typography.buttonWeight)
 					}
 					.tint(MiraTheme.ColorToken.foreground)
 				}
@@ -112,7 +105,7 @@ struct EditCredentialsSheet: View {
 						save()
 					} label: {
 						Image(systemName: "checkmark")
-							.fontWeight(.semibold)
+							.fontWeight(MiraTheme.Typography.buttonWeight)
 					}
 					.disabled(!canSave)
 					.tint(MiraTheme.ColorToken.primary)
@@ -136,16 +129,10 @@ struct EditCredentialsSheet: View {
 	}
 
 	private var header: some View {
-		VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-			Text(title)
-				.font(.largeTitle)
-				.fontWeight(.bold)
-				.foregroundStyle(MiraTheme.ColorToken.foreground)
-
-			Text("Add your university Wi-Fi username and password.")
-				.font(.subheadline)
-				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-		}
+		MiraPageHeader(
+			title,
+			subtitle: "Add your university Wi-Fi username and password."
+		)
 	}
 
 	private var formCard: some View {
@@ -168,16 +155,19 @@ struct EditCredentialsSheet: View {
 
 	private var usernameField: some View {
 		VStack(alignment: .leading, spacing: MiraTheme.Spacing.sm) {
-			Text(.username, language: language)
-				.font(.subheadline)
-				.fontWeight(.semibold)
-				.foregroundStyle(MiraTheme.ColorToken.foreground)
+			MiraFieldLabel(MiraText.username.localized(language))
 
-			TextField("name.surname@xyz.utm.md", text: $username)
+			TextField(
+				"",
+				text: $username,
+				prompt: Text(verbatim: "name.surname@xyz.utm.md")
+					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
+			)
+			.foregroundStyle(MiraTheme.ColorToken.foreground)
 #if os(iOS)
-				.textInputAutocapitalization(.never)
-				.keyboardType(.emailAddress)
-				.autocorrectionDisabled()
+					.textInputAutocapitalization(.never)
+					.keyboardType(.emailAddress)
+					.autocorrectionDisabled()
 #endif
 				.tint(MiraTheme.ColorToken.primary)
 				.padding(.horizontal, MiraTheme.Spacing.md)
@@ -203,9 +193,7 @@ struct EditCredentialsSheet: View {
 				}
 
 			if isUsernameInvalid {
-				Text(usernameErrorText)
-					.font(.caption)
-					.foregroundStyle(MiraTheme.ColorToken.destructive)
+				MiraHelperText(usernameErrorText, tone: .destructive)
 			}
 		}
 	}
@@ -220,19 +208,27 @@ struct EditCredentialsSheet: View {
 
 	private var passwordField: some View {
 		VStack(alignment: .leading, spacing: MiraTheme.Spacing.sm) {
-			Text(.password, language: language)
-				.font(.subheadline)
-				.fontWeight(.semibold)
-				.foregroundStyle(MiraTheme.ColorToken.foreground)
+			MiraFieldLabel(MiraText.password.localized(language))
 
 			HStack(spacing: MiraTheme.Spacing.sm) {
 				Group {
 					if isPasswordVisible {
-						TextField("Password", text: $password)
+						TextField(
+							"",
+							text: $password,
+							prompt: Text(verbatim: "Password")
+								.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
+						)
 					} else {
-						SecureField("Password", text: $password)
+						SecureField(
+							"",
+							text: $password,
+							prompt: Text(verbatim: "Password")
+								.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
+						)
 					}
 				}
+				.foregroundStyle(MiraTheme.ColorToken.foreground)
 #if os(iOS)
 				.textInputAutocapitalization(.never)
 				.autocorrectionDisabled()
@@ -270,9 +266,7 @@ struct EditCredentialsSheet: View {
 			}
 
 			if isPasswordInvalid {
-				Text("Password is required.")
-					.font(.caption)
-					.foregroundStyle(MiraTheme.ColorToken.destructive)
+				MiraHelperText("Password is required.", tone: .destructive)
 			}
 		}
 	}
@@ -285,7 +279,8 @@ struct EditCredentialsSheet: View {
 				Spacer()
 
 				Text("Delete Credentials")
-					.fontWeight(.semibold)
+					.font(MiraTheme.Typography.button)
+					.fontWeight(MiraTheme.Typography.buttonWeight)
 
 				Spacer()
 			}
@@ -293,17 +288,6 @@ struct EditCredentialsSheet: View {
 		}
 		.buttonStyle(.bordered)
 		.tint(MiraTheme.ColorToken.destructive)
-	}
-
-	private var securityNote: some View {
-		HStack(alignment: .top, spacing: MiraTheme.Spacing.md) {
-			Image(systemName: "lock.shield")
-				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-
-			Text("Credentials will be stored securely on this device.")
-				.font(.subheadline)
-				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-		}
 	}
 
 	private func save() {
