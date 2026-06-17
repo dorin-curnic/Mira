@@ -108,37 +108,13 @@ struct ReportProblemSheet: View {
 	}
 
 	private var descriptionField: some View {
-		VStack(alignment: .leading, spacing: MiraTheme.Spacing.sm) {
-			MiraFieldLabel("Description")
-
-			TextEditor(text: $description)
-				.frame(minHeight: 140)
-				.padding(MiraTheme.Spacing.sm)
-				.scrollContentBackground(.hidden)
-				.background(MiraTheme.ColorToken.secondary)
-				.clipShape(
-					RoundedRectangle(
-						cornerRadius: MiraTheme.Radius.md,
-						style: .continuous
-					)
-				)
-				.overlay {
-					RoundedRectangle(
-						cornerRadius: MiraTheme.Radius.md,
-						style: .continuous
-					)
-					.stroke(
-						isDescriptionInvalid
-						? MiraTheme.ColorToken.destructive
-						: MiraTheme.ColorToken.border,
-						lineWidth: 1
-					)
-				}
-
-			if isDescriptionInvalid {
-				MiraHelperText("Description is required.", tone: .destructive)
-			}
-		}
+		MiraTextEditorField(
+			label: "Description",
+			placeholder: "Describe what happened...",
+			text: $description,
+			errorText: isDescriptionInvalid ? "Description is required." : nil,
+			minHeight: 140
+		)
 	}
 
 	private var attachmentsField: some View {

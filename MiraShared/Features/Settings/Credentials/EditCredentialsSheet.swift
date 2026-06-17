@@ -11,7 +11,6 @@ struct EditCredentialsSheet: View {
 
 	@State private var username: String
 	@State private var password: String
-	@State private var isPasswordVisible = false
 	@State private var didTryToSave = false
 	@State private var isShowingDeleteConfirmation = false
 
@@ -154,48 +153,13 @@ struct EditCredentialsSheet: View {
 	}
 
 	private var usernameField: some View {
-		VStack(alignment: .leading, spacing: MiraTheme.Spacing.sm) {
-			MiraFieldLabel(MiraText.username.localized(language))
-
-			TextField(
-				"",
-				text: $username,
-				prompt: Text(verbatim: "name.surname@xyz.utm.md")
-					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-			)
-			.foregroundStyle(MiraTheme.ColorToken.foreground)
-#if os(iOS)
-			.textInputAutocapitalization(.never)
-			.keyboardType(.emailAddress)
-			.autocorrectionDisabled()
-#endif
-			.tint(MiraTheme.ColorToken.primary)
-			.padding(.horizontal, MiraTheme.Spacing.md)
-			.padding(.vertical, MiraTheme.Spacing.md)
-			.background(MiraTheme.ColorToken.secondary)
-			.clipShape(
-				RoundedRectangle(
-					cornerRadius: MiraTheme.Radius.md,
-					style: .continuous
-				)
-			)
-			.overlay {
-				RoundedRectangle(
-					cornerRadius: MiraTheme.Radius.md,
-					style: .continuous
-				)
-				.stroke(
-					isUsernameInvalid
-					? MiraTheme.ColorToken.destructive
-					: MiraTheme.ColorToken.border,
-					lineWidth: 1
-				)
-			}
-
-			if isUsernameInvalid {
-				MiraHelperText(usernameErrorText, tone: .destructive)
-			}
-		}
+		MiraTextField(
+			label: MiraText.username.localized(language),
+			placeholder: "name.surname@xyz.utm.md",
+			text: $username,
+			errorText: isUsernameInvalid ? usernameErrorText : nil,
+			keyboard: .email
+		)
 	}
 
 	private var usernameErrorText: String {
@@ -207,68 +171,12 @@ struct EditCredentialsSheet: View {
 	}
 
 	private var passwordField: some View {
-		VStack(alignment: .leading, spacing: MiraTheme.Spacing.sm) {
-			MiraFieldLabel(MiraText.password.localized(language))
-
-			HStack(spacing: MiraTheme.Spacing.sm) {
-				Group {
-					if isPasswordVisible {
-						TextField(
-							"",
-							text: $password,
-							prompt: Text(verbatim: "Password")
-								.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-						)
-					} else {
-						SecureField(
-							"",
-							text: $password,
-							prompt: Text(verbatim: "Password")
-								.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-						)
-					}
-				}
-				.foregroundStyle(MiraTheme.ColorToken.foreground)
-#if os(iOS)
-				.textInputAutocapitalization(.never)
-				.autocorrectionDisabled()
-#endif
-				.tint(MiraTheme.ColorToken.primary)
-
-				Button {
-					isPasswordVisible.toggle()
-				} label: {
-					Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
-						.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-				}
-				.buttonStyle(.plain)
-			}
-			.padding(.horizontal, MiraTheme.Spacing.md)
-			.padding(.vertical, MiraTheme.Spacing.md)
-			.background(MiraTheme.ColorToken.secondary)
-			.clipShape(
-				RoundedRectangle(
-					cornerRadius: MiraTheme.Radius.md,
-					style: .continuous
-				)
-			)
-			.overlay {
-				RoundedRectangle(
-					cornerRadius: MiraTheme.Radius.md,
-					style: .continuous
-				)
-				.stroke(
-					isPasswordInvalid
-					? MiraTheme.ColorToken.destructive
-					: MiraTheme.ColorToken.border,
-					lineWidth: 1
-				)
-			}
-
-			if isPasswordInvalid {
-				MiraHelperText("Password is required.", tone: .destructive)
-			}
-		}
+		MiraPasswordField(
+			label: MiraText.password.localized(language),
+			placeholder: "Password",
+			text: $password,
+			errorText: isPasswordInvalid ? "Password is required." : nil
+		)
 	}
 
 	private var deleteButton: some View {
