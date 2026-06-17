@@ -196,8 +196,5 @@ struct ReportProblemSheet: View {
 		guard canSubmit else {
 			return
 		}
-
-		// Backend later: send selectedCategory, description, and attachmentURLs.
-		dismiss()
 	}
 }

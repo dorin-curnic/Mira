@@ -329,8 +329,6 @@ struct SettingsView: View {
 		guard let url = URL(string: string) else {
 			return
 		}
-	
-
 #if os(iOS)
 		UIApplication.shared.open(url)
 #elseif os(macOS)

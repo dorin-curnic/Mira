@@ -9,16 +9,16 @@ struct EditCredentialsSheet: View {
 	@Environment(\.dismiss) private var dismiss
 	@Environment(\.miraLanguage) private var language
 
-	let mode: Mode
-	let initialCredentials: WiFiCredentials?
-	let onSave: (WiFiCredentials) -> Void
-	let onDelete: (() -> Void)?
-
 	@State private var username: String
 	@State private var password: String
 	@State private var isPasswordVisible = false
 	@State private var didTryToSave = false
 	@State private var isShowingDeleteConfirmation = false
+
+	let mode: Mode
+	let initialCredentials: WiFiCredentials?
+	let onSave: (WiFiCredentials) -> Void
+	let onDelete: (() -> Void)?
 
 	init(
 		mode: Mode,
@@ -165,32 +165,32 @@ struct EditCredentialsSheet: View {
 			)
 			.foregroundStyle(MiraTheme.ColorToken.foreground)
 #if os(iOS)
-					.textInputAutocapitalization(.never)
-					.keyboardType(.emailAddress)
-					.autocorrectionDisabled()
+			.textInputAutocapitalization(.never)
+			.keyboardType(.emailAddress)
+			.autocorrectionDisabled()
 #endif
-				.tint(MiraTheme.ColorToken.primary)
-				.padding(.horizontal, MiraTheme.Spacing.md)
-				.padding(.vertical, MiraTheme.Spacing.md)
-				.background(MiraTheme.ColorToken.secondary)
-				.clipShape(
-					RoundedRectangle(
-						cornerRadius: MiraTheme.Radius.md,
-						style: .continuous
-					)
+			.tint(MiraTheme.ColorToken.primary)
+			.padding(.horizontal, MiraTheme.Spacing.md)
+			.padding(.vertical, MiraTheme.Spacing.md)
+			.background(MiraTheme.ColorToken.secondary)
+			.clipShape(
+				RoundedRectangle(
+					cornerRadius: MiraTheme.Radius.md,
+					style: .continuous
 				)
-				.overlay {
-					RoundedRectangle(
-						cornerRadius: MiraTheme.Radius.md,
-						style: .continuous
-					)
-					.stroke(
-						isUsernameInvalid
-						? MiraTheme.ColorToken.destructive
-						: MiraTheme.ColorToken.border,
-						lineWidth: 1
-					)
-				}
+			)
+			.overlay {
+				RoundedRectangle(
+					cornerRadius: MiraTheme.Radius.md,
+					style: .continuous
+				)
+				.stroke(
+					isUsernameInvalid
+					? MiraTheme.ColorToken.destructive
+					: MiraTheme.ColorToken.border,
+					lineWidth: 1
+				)
+			}
 
 			if isUsernameInvalid {
 				MiraHelperText(usernameErrorText, tone: .destructive)
