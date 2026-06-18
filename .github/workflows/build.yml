@@ -1,0 +1,41 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build-ios:
+    name: Build iOS
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build iOS
+        run: |
+          xcodebuild \
+            -project Mira.xcodeproj \
+            -scheme Mira_iOS \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+  build-macos:
+    name: Build macOS
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build macOS
+        run: |
+          xcodebuild \
+            -project Mira.xcodeproj \
+            -scheme Mira_macOS \
+            -destination 'platform=macOS,arch=arm64' \
+            build
+
