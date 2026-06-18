@@ -23,3 +23,6 @@ build/
 *.secret
 Secrets.swift
 Config.local.plist
+
+# Local SourceKit / xcode-build-server config
+buildServer.json
