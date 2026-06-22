@@ -51,7 +51,7 @@ struct MiraPasswordField: View {
 	private var passwordInput: some View {
 		if isPasswordVisible {
 			TextField(
-				"",
+				LocalizedStringKey("form.input"),
 				text: $text,
 				prompt: Text(verbatim: placeholder)
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
@@ -64,7 +64,7 @@ struct MiraPasswordField: View {
 			.tint(MiraTheme.ColorToken.primary)
 		} else {
 			SecureField(
-				"",
+				LocalizedStringKey("form.input"),
 				text: $text,
 				prompt: Text(verbatim: placeholder)
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)

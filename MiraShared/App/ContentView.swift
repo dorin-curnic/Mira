@@ -79,7 +79,7 @@ struct ContentView: View {
 				DashboardView()
 					.tabItem {
 						Label(
-							MiraPage.dashboard.rawValue,
+							MiraPage.dashboard.titleText.localized(selectedLanguage),
 							systemImage: MiraPage.dashboard.iconName
 						)
 					}
@@ -88,7 +88,7 @@ struct ContentView: View {
 				NetworkView(networkUsageService: networkUsageService)
 					.tabItem {
 						Label(
-							MiraPage.network.rawValue,
+							MiraPage.network.titleText.localized(selectedLanguage),
 							systemImage: MiraPage.network.iconName
 						)
 					}
@@ -97,7 +97,7 @@ struct ContentView: View {
 				SettingsView()
 					.tabItem {
 						Label(
-							MiraPage.settings.rawValue,
+							MiraPage.settings.titleText.localized(selectedLanguage),
 							systemImage: MiraPage.settings.iconName
 						)
 					}
@@ -114,11 +114,11 @@ struct ContentView: View {
 		NavigationSplitView {
 			List(selection: $selectedPage) {
 				ForEach(MiraPage.allCases) { page in
-					Label(page.rawValue, systemImage: page.iconName)
+					Label(page.titleText.localized(selectedLanguage), systemImage: page.iconName)
 						.tag(page)
 				}
 			}
-			.navigationTitle("Mira")
+			.navigationTitle(MiraText.appName.localized(selectedLanguage))
 			.frame(minWidth: 180)
 		} detail: {
 			VStack(spacing: 0) {

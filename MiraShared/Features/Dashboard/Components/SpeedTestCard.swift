@@ -45,12 +45,12 @@ struct SpeedTestCard: View {
 	private var header: some View {
 		HStack(alignment: .top, spacing: MiraTheme.Spacing.md) {
 			VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-				Text(.speedTestTitle, language: language)
+				Text(MiraText.speedTestTitle.localized(language))
 					.font(MiraTheme.Typography.cardTitle)
 					.fontWeight(MiraTheme.Typography.cardTitleWeight)
 					.foregroundStyle(MiraTheme.ColorToken.foreground)
 
-				Text(.speedTestDescription, language: language)
+				Text(MiraText.speedTestDescription.localized(language))
 					.font(MiraTheme.Typography.cardSubtitle)
 					.fontWeight(MiraTheme.Typography.cardSubtitleWeight)
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)

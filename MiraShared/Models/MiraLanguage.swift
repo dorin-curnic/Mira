@@ -10,6 +10,23 @@ enum MiraLanguage: String, CaseIterable, Identifiable {
 
 	var id: String { rawValue }
 
+	var localizationIdentifier: String {
+		switch self {
+		case .english:
+			return "en"
+		case .romanian:
+			return "ro"
+		case .russian:
+			return "ru"
+		case .french:
+			return "fr"
+		case .chinese:
+			return "zh-Hans"
+		case .japanese:
+			return "ja"
+		}
+	}
+
 	var shortName: String {
 		switch self {
 		case .english:

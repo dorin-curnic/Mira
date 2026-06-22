@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SettingsCredentialsSection: View {
+	@Environment(\.miraLanguage) private var language
 	let credentials: WiFiCredentials?
 	let isPasswordRevealed: Bool
 	let revealErrorMessage: String?
@@ -10,7 +11,7 @@ struct SettingsCredentialsSection: View {
 	let onEditCredentials: () -> Void
 
 	var body: some View {
-		MiraCardSection(title: "Credentials") {
+		MiraCardSection(title: MiraText.credentialsTitle.localized(language)) {
 			content
 		}
 	}
@@ -41,6 +42,7 @@ struct SettingsCredentialsSection: View {
 }
 
 private struct EmptyCredentialsView: View {
+	@Environment(\.miraLanguage) private var language
 	let onAddCredentials: () -> Void
 
 	var body: some View {
@@ -52,12 +54,12 @@ private struct EmptyCredentialsView: View {
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 
 				VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-					Text("There are no credentials yet.")
+					Text(MiraText.credentialsNoTitle.localized(language))
 						.font(MiraTheme.Typography.rowTitle)
 						.fontWeight(MiraTheme.Typography.rowTitleWeight)
 						.foregroundStyle(MiraTheme.ColorToken.foreground)
 
-					Text("Add your university username and password to use Mira connection features.")
+					Text(MiraText.credentialsNoSubtitle.localized(language))
 						.font(MiraTheme.Typography.rowSubtitle)
 						.fontWeight(MiraTheme.Typography.rowSubtitleWeight)
 						.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
@@ -70,7 +72,7 @@ private struct EmptyCredentialsView: View {
 				HStack {
 					Spacer()
 
-					Text("Add Credentials")
+					Text(MiraText.credentialsAddButton.localized(language))
 						.font(MiraTheme.Typography.button)
 						.fontWeight(MiraTheme.Typography.buttonWeight)
 

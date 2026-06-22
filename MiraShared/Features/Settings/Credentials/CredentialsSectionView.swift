@@ -82,7 +82,7 @@ struct CredentialsSectionView: View {
 				.scaledToFit()
 				.frame(width: 140, height: 100)
 
-			Text("Technical University of Moldova")
+			Text(MiraText.universityName.localized(language))
 				.font(MiraTheme.Typography.sectionTitle)
 				.fontWeight(MiraTheme.Typography.sectionTitleWeight)
 				.foregroundStyle(MiraTheme.ColorToken.foreground)
@@ -99,7 +99,7 @@ struct CredentialsSectionView: View {
 		Button {
 			onEdit()
 		} label: {
-			Label("Edit credentials", systemImage: "pencil")
+			Label(MiraText.credentialsEditButton.localized(language), systemImage: "pencil")
 				.font(MiraTheme.Typography.button)
 				.fontWeight(MiraTheme.Typography.buttonWeight)
 				.foregroundStyle(MiraTheme.ColorToken.primary)
@@ -112,7 +112,7 @@ struct CredentialsSectionView: View {
 				}
 		}
 		.buttonStyle(.plain)
-		.accessibilityLabel("Edit credentials")
+		.accessibilityLabel(MiraText.credentialsEditButton.localized(language))
 	}
 
 	private func credentialRow(

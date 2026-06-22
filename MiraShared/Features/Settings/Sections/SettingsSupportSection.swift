@@ -1,18 +1,19 @@
 import SwiftUI
 
 struct SettingsSupportSection: View {
+	@Environment(\.miraLanguage) private var language
 	let onShowReportForm: () -> Void
 	let onOpenGitHubRepository: () -> Void
 
 	var body: some View {
-		MiraCardSection(title: "Support") {
+		MiraCardSection(title: MiraText.settingsSupportTitle.localized(language)) {
 			VStack(spacing: 0) {
 				Button {
 					onShowReportForm()
 				} label: {
 					SettingsActionRow(
-						title: "Report Form",
-						subtitle: "Report a bug or suggest an improvement.",
+						title: MiraText.settingsReportFormTitle.localized(language),
+						subtitle: MiraText.settingsReportFormSubtitle.localized(language),
 						icon: "exclamationmark.bubble",
 						trailingIcon: "pencil.and.list.clipboard"
 					)
@@ -25,8 +26,8 @@ struct SettingsSupportSection: View {
 					onOpenGitHubRepository()
 				} label: {
 					SettingsActionRow(
-						title: "GitHub Repository",
-						subtitle: "Open the Mira source code.",
+						title: MiraText.settingsGitHubRepositoryTitle.localized(language),
+						subtitle: MiraText.settingsGitHubRepositorySubtitle.localized(language),
 						icon: "chevron.left.forwardslash.chevron.right"
 					)
 				}

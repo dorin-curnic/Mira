@@ -59,11 +59,17 @@ struct NetworkTrafficChart: View {
 					.foregroundStyle(MiraTheme.ColorToken.foreground)
 			}
 
-			Text("\(MiraText.total.localized(language)): \(totalText)")
-				.font(MiraTheme.Typography.rowSubtitle)
-				.fontWeight(MiraTheme.Typography.rowValueWeight)
-				.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-				.padding(.top, MiraTheme.Spacing.xs)
+			Text(
+				String(
+					format: MiraText.networkTotalFormat.localized(language),
+					MiraText.total.localized(language),
+					totalText
+				)
+			)
+			.font(MiraTheme.Typography.rowSubtitle)
+			.fontWeight(MiraTheme.Typography.rowValueWeight)
+			.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
+			.padding(.top, MiraTheme.Spacing.xs)
 		}
 	}
 
@@ -93,7 +99,7 @@ struct NetworkTrafficChart: View {
 		}
 		.overlay {
 			if filteredPoints.isEmpty {
-				Text(.collectingNetworkData, language: language)
+				Text(MiraText.collectingNetworkData.localized(language))
 					.font(MiraTheme.Typography.cardSubtitle)
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 			}
@@ -104,15 +110,15 @@ struct NetworkTrafficChart: View {
 	private var chartMarks: some ChartContent {
 		ForEach(filteredPoints) { point in
 			AreaMark(
-				x: .value("Time", point.timestamp),
-				yStart: .value("Minimum", 0),
+				x: .value(MiraText.networkChartTime.localized(language), point.timestamp),
+				yStart: .value(MiraText.networkChartMinimum.localized(language), 0),
 				yEnd: .value(kind.title(language: language), kind.speed(from: point))
 			)
 			.foregroundStyle(areaGradient)
 			.interpolationMethod(.catmullRom)
 
 			LineMark(
-				x: .value("Time", point.timestamp),
+				x: .value(MiraText.networkChartTime.localized(language), point.timestamp),
 				y: .value(kind.title(language: language), kind.speed(from: point))
 			)
 			.foregroundStyle(kind.color)
@@ -131,7 +137,7 @@ struct NetworkTrafficChart: View {
 	private var selectionMarks: some ChartContent {
 		if let selectedPoint {
 			RuleMark(
-				x: .value("Selected Time", selectedPoint.timestamp)
+				x: .value(MiraText.networkChartSelectedTime.localized(language), selectedPoint.timestamp)
 			)
 			.foregroundStyle(MiraTheme.ColorToken.mutedForeground.opacity(0.35))
 			.lineStyle(
@@ -142,7 +148,7 @@ struct NetworkTrafficChart: View {
 			)
 
 			PointMark(
-				x: .value("Selected Time", selectedPoint.timestamp),
+				x: .value(MiraText.networkChartSelectedTime.localized(language), selectedPoint.timestamp),
 				y: .value(kind.title(language: language), kind.speed(from: selectedPoint))
 			)
 			.foregroundStyle(kind.color)

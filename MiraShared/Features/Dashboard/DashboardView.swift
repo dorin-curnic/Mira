@@ -14,8 +14,11 @@ struct DashboardView: View {
 	@State private var speedTestProgress = 0.0
 
 	private var connectionActionTitle: String {
-		let text: MiraText = connectionStatus == .connected ? .disconnect : .connect
-		return text.localized(language)
+		if (connectionStatus == .connected) {
+			return MiraText.disconnected.localized(language)
+		} else {
+			return MiraText.connected.localized(language)
+		}
 	}
 
 	private var connectionActionTint: Color {
@@ -78,7 +81,7 @@ struct DashboardView: View {
 		MiraCard {
 			VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
 				HStack(alignment: .top, spacing: MiraTheme.Spacing.md) {
-					Text(.wifiName, language: language)
+					Text(MiraText.wifiName.localized(language))
 						.font(MiraTheme.Typography.cardTitle)
 						.fontWeight(MiraTheme.Typography.cardTitleWeight)
 						.foregroundStyle(MiraTheme.ColorToken.foreground)
@@ -90,7 +93,7 @@ struct DashboardView: View {
 
 				Spacer()
 
-				Text(.wifiDescription, language: language)
+				Text(MiraText.wifiDescription.localized(language))
 					.font(MiraTheme.Typography.cardSubtitle)
 					.fontWeight(MiraTheme.Typography.cardSubtitleWeight)
 			}
@@ -122,7 +125,8 @@ struct DashboardView: View {
 
 		do {
 			try await authService.authenticate(
-				reason: MiraText.authenticateReason.localized(language)
+				reason: MiraText.authenticateReason.localized(language),
+				language: language
 			)
 
 			userAllowsAutoReconnect = true
@@ -174,6 +178,10 @@ struct DashboardView: View {
 					speedTestProgress = 1
 				}
 			}
+		} catch let error as SpeedTestError {
+			speedTestError = error.errorDescription(language: language)
+			speedTestProgress = 0
+			currentSpeedValueText = "0.0"
 		} catch {
 			speedTestError = error.localizedDescription
 			speedTestProgress = 0

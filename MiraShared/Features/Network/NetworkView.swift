@@ -26,11 +26,11 @@ struct NetworkView: View {
 		MiraCard {
 			HStack {
 				VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-					Text(.wifiName, language: language)
+					Text(MiraText.wifiName.localized(language))
 						.font(MiraTheme.Typography.cardTitle)
 						.fontWeight(MiraTheme.Typography.cardTitleWeight)
 
-					Text(.wifiConnection, language: language)
+					Text(MiraText.wifiConnection.localized(language))
 						.font(MiraTheme.Typography.cardSubtitle)
 						.fontWeight(MiraTheme.Typography.cardSubtitleWeight)
 						.foregroundStyle(MiraTheme.ColorToken.mutedForeground)

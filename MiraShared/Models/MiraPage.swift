@@ -1,11 +1,22 @@
 import SwiftUI
 
 enum MiraPage: String, CaseIterable, Identifiable {
-	case dashboard = "Dashboard"
-	case network = "Network"
-	case settings = "Settings"
+	case dashboard
+	case network
+	case settings
 
-	var id: String { rawValue }
+	var id: Self { self }
+
+	var titleText: MiraText {
+		switch self {
+		case .dashboard:
+			return .navigationDashboard
+		case .network:
+			return .navigationNetwork
+		case .settings:
+			return .navigationSettings
+		}
+	}
 
 	var iconName: String {
 		switch self {

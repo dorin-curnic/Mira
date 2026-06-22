@@ -17,16 +17,17 @@ enum AuthError: Error, LocalizedError {
 
 final class AuthService {
 	func authenticate(
-		reason: String = "Authenticate to continue with Mira"
+		reason: String = "Authenticate to continue with Mira",
+		language: MiraLanguage
 	) async throws {
 		let context = LAContext()
-		context.localizedCancelTitle = "Cancel"
+		context.localizedCancelTitle = MiraText.commonCancel.localized(language)
 
 		var error: NSError?
 
 		guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
 			throw AuthError.unavailable(
-				error?.localizedDescription ?? "Device authentication is not available."
+				error?.localizedDescription ?? MiraText.authErrorUnavailable.localized(language)
 			)
 		}
 
@@ -40,7 +41,7 @@ final class AuthService {
 				} else {
 					continuation.resume(
 						throwing: AuthError.failed(
-							error?.localizedDescription ?? "Authentication failed."
+							error?.localizedDescription ?? MiraText.authErrorFailed.localized(language)
 						)
 					)
 				}

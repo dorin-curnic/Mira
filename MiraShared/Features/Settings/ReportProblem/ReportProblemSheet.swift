@@ -2,6 +2,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct ReportProblemSheet: View {
+	@Environment(\.miraLanguage) private var language
 	@Environment(\.dismiss) private var dismiss
 
 	@State private var selectedCategory: ReportCategory = .uiBug
@@ -28,7 +29,7 @@ struct ReportProblemSheet: View {
 				header
 				formCard
 			}
-			.navigationTitle("Report Form")
+			.navigationTitle(MiraText.reportFormTitle.localized(language))
 #if os(iOS)
 			.navigationBarTitleDisplayMode(.inline)
 #endif
@@ -41,6 +42,7 @@ struct ReportProblemSheet: View {
 							.fontWeight(MiraTheme.Typography.buttonWeight)
 					}
 					.tint(MiraTheme.ColorToken.foreground)
+					.accessibilityLabel(MiraText.commonClose.localized(language))
 				}
 
 				ToolbarItem(placement: .confirmationAction) {
@@ -52,6 +54,7 @@ struct ReportProblemSheet: View {
 					}
 					.disabled(!canSubmit)
 					.tint(MiraTheme.ColorToken.primary)
+					.accessibilityLabel(MiraText.commonSubmit.localized(language))
 				}
 			}
 			.fileImporter(
@@ -71,8 +74,8 @@ struct ReportProblemSheet: View {
 
 	private var header: some View {
 		MiraPageHeader(
-			"Report a Problem",
-			subtitle: "Describe what happened and attach screenshots or videos if needed."
+			MiraText.reportTitle.localized(language),
+			subtitle: MiraText.reportSubtitle.localized(language)
 		)
 	}
 
@@ -94,11 +97,11 @@ struct ReportProblemSheet: View {
 
 	private var categoryField: some View {
 		VStack(alignment: .leading, spacing: MiraTheme.Spacing.sm) {
-			MiraFieldLabel("Category")
+			MiraFieldLabel(MiraText.reportCategory.localized(language))
 
-			Picker("Category", selection: $selectedCategory) {
+			Picker(MiraText.reportCategory.localized(language), selection: $selectedCategory) {
 				ForEach(ReportCategory.allCases) { category in
-					Text(category.rawValue)
+					Text(category.titleText.localized(language))
 						.tag(category)
 				}
 			}
@@ -109,17 +112,17 @@ struct ReportProblemSheet: View {
 
 	private var descriptionField: some View {
 		MiraTextEditorField(
-			label: "Description",
-			placeholder: "Describe what happened...",
+			label: MiraText.reportDescription.localized(language),
+			placeholder: MiraText.reportDescriptionPlaceholder.localized(language),
 			text: $description,
-			errorText: isDescriptionInvalid ? "Description is required." : nil,
+			errorText: isDescriptionInvalid ? MiraText.reportDescriptionRequiredError.localized(language) : nil,
 			minHeight: 140
 		)
 	}
 
 	private var attachmentsField: some View {
 		VStack(alignment: .leading, spacing: MiraTheme.Spacing.sm) {
-			MiraFieldLabel("Attachments")
+			MiraFieldLabel(MiraText.reportAttachments.localized(language))
 
 			Button {
 				isShowingAttachmentImporter = true
@@ -129,7 +132,7 @@ struct ReportProblemSheet: View {
 						.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 
 					VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-						Text("Add photos or videos")
+						Text(MiraText.reportAttachmentsAdd.localized(language))
 							.font(MiraTheme.Typography.rowTitle)
 							.fontWeight(MiraTheme.Typography.rowTitleWeight)
 							.foregroundStyle(MiraTheme.ColorToken.foreground)
@@ -160,10 +163,10 @@ struct ReportProblemSheet: View {
 
 	private var attachmentSummary: String {
 		if attachmentURLs.isEmpty {
-			return "No attachments selected."
+			return MiraText.reportAttachmentsNone.localized(language)
 		}
 
-		return "\(attachmentURLs.count) attachment(s) selected."
+		return "\(attachmentURLs.count)" + MiraText.reportAttachmentsSelectedCount.localized(language)
 	}
 
 	private func submit() {

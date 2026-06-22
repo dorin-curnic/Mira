@@ -86,7 +86,7 @@ struct SettingsView: View {
 	}
 
 	private var pageHeader: some View {
-		MiraPageHeader("Settings")
+		MiraPageHeader(MiraText.settingsTitle.localized(language))
 	}
 
 	private var appVersion: String {
@@ -156,7 +156,8 @@ struct SettingsView: View {
 
 		do {
 			try await authService.authenticate(
-				reason: "Authenticate to reveal your saved password."
+				reason: MiraText.credentialsRevealAuthenticationReason.localized(language),
+				language: language
 			)
 
 			isPasswordRevealed = true

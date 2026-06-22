@@ -37,9 +37,9 @@ struct EditCredentialsSheet: View {
 	private var title: String {
 		switch mode {
 		case .add:
-			return "Add Credentials"
+			return MiraText.credentialsAddTitle.localized(language)
 		case .edit:
-			return "Edit Credentials"
+			return MiraText.credentialsEditTitle.localized(language)
 		}
 	}
 
@@ -111,18 +111,18 @@ struct EditCredentialsSheet: View {
 				}
 			}
 			.confirmationDialog(
-				"Delete credentials?",
+				MiraText.credentialsDeleteQuestion.localized(language),
 				isPresented: $isShowingDeleteConfirmation,
 				titleVisibility: .visible
 			) {
-				Button("Delete Credentials", role: .destructive) {
+				Button(MiraText.credentialsDeleteButton.localized(language), role: .destructive) {
 					onDelete?()
 					dismiss()
 				}
 
-				Button("Cancel", role: .cancel) {}
+				Button(MiraText.commonCancel.localized(language), role: .cancel) {}
 			} message: {
-				Text("This will remove your saved username and password from this device.")
+				Text(MiraText.credentialsDeleteMessage.localized(language))
 			}
 		}
 	}
@@ -130,7 +130,7 @@ struct EditCredentialsSheet: View {
 	private var header: some View {
 		MiraPageHeader(
 			title,
-			subtitle: "Add your university Wi-Fi username and password."
+			subtitle: MiraText.credentialsSheetSubtitle.localized(language)
 		)
 	}
 
@@ -155,7 +155,7 @@ struct EditCredentialsSheet: View {
 	private var usernameField: some View {
 		MiraTextField(
 			label: MiraText.username.localized(language),
-			placeholder: "name.surname@xyz.utm.md",
+			placeholder: MiraText.credentialsUsernamePlaceholder.localized(language),
 			text: $username,
 			errorText: isUsernameInvalid ? usernameErrorText : nil,
 			keyboard: .email
@@ -164,18 +164,18 @@ struct EditCredentialsSheet: View {
 
 	private var usernameErrorText: String {
 		if isUsernameEmpty {
-			return "Username is required."
+			return MiraText.credentialsUsernameRequiredError.localized(language)
 		}
 
-		return "Use format: name.surname@xyz.utm.md"
+		return MiraText.credentialsUsernameFormatError.localized(language)
 	}
 
 	private var passwordField: some View {
 		MiraPasswordField(
 			label: MiraText.password.localized(language),
-			placeholder: "Password",
+			placeholder: MiraText.credentialsPasswordPlaceholder.localized(language),
 			text: $password,
-			errorText: isPasswordInvalid ? "Password is required." : nil
+			errorText: isPasswordInvalid ? MiraText.credentialsPasswordRequiredError.localized(language) : nil
 		)
 	}
 
@@ -186,7 +186,7 @@ struct EditCredentialsSheet: View {
 			HStack {
 				Spacer()
 
-				Text("Delete Credentials")
+				Text(MiraText.credentialsDeleteButton.localized(language))
 					.font(MiraTheme.Typography.button)
 					.fontWeight(MiraTheme.Typography.buttonWeight)
 

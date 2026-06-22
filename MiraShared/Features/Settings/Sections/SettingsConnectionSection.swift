@@ -9,11 +9,11 @@ struct SettingsConnectionSection: View {
 	let portal: String
 
 	var body: some View {
-		MiraCardSection(title: "Connection") {
+		MiraCardSection(title: MiraText.settingsConnectionTitle.localized(language)) {
 			VStack(alignment: .leading, spacing: MiraTheme.Spacing.md) {
 				SettingsToggleRow(
-					title: "Auto-reconnect",
-					subtitle: "Allow Mira to reconnect to university Wi-Fi when needed.",
+					title: MiraText.settingsAutoReconnectTitle.localized(language),
+					subtitle: MiraText.settingsAutoReconnectSubtitle.localized(language),
 					isOn: $allowsAutoReconnect
 				)
 

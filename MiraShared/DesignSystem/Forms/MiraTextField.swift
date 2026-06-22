@@ -36,7 +36,7 @@ struct MiraTextField: View {
 			MiraFieldLabel(label)
 
 			TextField(
-				"",
+				LocalizedStringKey("form.input"),
 				text: $text,
 				prompt: Text(verbatim: placeholder)
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
