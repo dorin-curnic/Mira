@@ -1,6 +1,7 @@
 # Xcode build output
 DerivedData/
 build/
+.derivedData/
 *.xcarchive
 
 # Xcode user-specific files
