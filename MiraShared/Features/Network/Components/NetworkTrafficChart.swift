@@ -1,5 +1,5 @@
-import SwiftUI
 import Charts
+import SwiftUI
 
 struct NetworkTrafficChart: View {
 	@Environment(\.miraLanguage) private var language
@@ -184,7 +184,7 @@ struct NetworkTrafficChart: View {
 		LinearGradient(
 			colors: [
 				kind.color.opacity(0.55),
-				kind.color.opacity(0.08)
+				kind.color.opacity(0.08),
 			],
 			startPoint: .top,
 			endPoint: .bottom
@@ -192,7 +192,8 @@ struct NetworkTrafficChart: View {
 	}
 
 	private var maxYValue: Double {
-		let maxPoint = filteredPoints
+		let maxPoint =
+			filteredPoints
 			.map { kind.speed(from: $0) }
 			.max() ?? 1
 
@@ -255,8 +256,7 @@ struct NetworkTrafficChart: View {
 
 	private func nearestPoint(to date: Date) -> NetworkUsagePoint? {
 		filteredPoints.min {
-			abs($0.timestamp.timeIntervalSince(date)) <
-				abs($1.timestamp.timeIntervalSince(date))
+			abs($0.timestamp.timeIntervalSince(date)) < abs($1.timestamp.timeIntervalSince(date))
 		}
 	}
 }

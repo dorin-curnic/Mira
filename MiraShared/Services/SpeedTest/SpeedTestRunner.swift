@@ -78,8 +78,9 @@ final class SpeedTestRunner: NSObject, URLSessionDataDelegate {
 		if responseExpectedBytes > 0 {
 			expectedBytes = responseExpectedBytes
 		} else if let contentLength = httpResponse.value(forHTTPHeaderField: "Content-Length"),
-				  let parsedContentLength = Int64(contentLength),
-				  parsedContentLength > 0 {
+			let parsedContentLength = Int64(contentLength),
+			parsedContentLength > 0
+		{
 			expectedBytes = parsedContentLength
 		} else {
 			expectedBytes = targetExpectedBytes

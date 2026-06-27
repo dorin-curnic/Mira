@@ -3,7 +3,8 @@ import SwiftUI
 struct ContentView: View {
 	@State private var selectedPage: MiraPage = .dashboard
 	@AppStorage("selectedTheme") private var selectedThemeRawValue = MiraThemeMode.system.rawValue
-	@AppStorage("selectedLanguage") private var selectedLanguageRawValue = MiraLanguage.english.rawValue
+	@AppStorage("selectedLanguage") private var selectedLanguageRawValue = MiraLanguage.english
+		.rawValue
 
 	@StateObject private var networkUsageService = NetworkUsageService()
 
@@ -51,11 +52,11 @@ struct ContentView: View {
 
 	@ViewBuilder
 	private var rootLayout: some View {
-#if os(macOS)
-		macOSLayout
-#else
-		iOSLayout
-#endif
+		#if os(macOS)
+			macOSLayout
+		#else
+			iOSLayout
+		#endif
 	}
 
 	private var topBar: some View {
@@ -70,66 +71,66 @@ struct ContentView: View {
 		.background(MiraTheme.ColorToken.background)
 	}
 
-#if !os(macOS)
-	private var iOSLayout: some View {
-		VStack(spacing: 0) {
-			topBar
-
-			TabView(selection: $selectedPage) {
-				DashboardView()
-					.tabItem {
-						Label(
-							MiraPage.dashboard.titleText.localized(selectedLanguage),
-							systemImage: MiraPage.dashboard.iconName
-						)
-					}
-					.tag(MiraPage.dashboard)
-
-				NetworkView(networkUsageService: networkUsageService)
-					.tabItem {
-						Label(
-							MiraPage.network.titleText.localized(selectedLanguage),
-							systemImage: MiraPage.network.iconName
-						)
-					}
-					.tag(MiraPage.network)
-
-				SettingsView()
-					.tabItem {
-						Label(
-							MiraPage.settings.titleText.localized(selectedLanguage),
-							systemImage: MiraPage.settings.iconName
-						)
-					}
-					.tag(MiraPage.settings)
-			}
-			.tint(MiraTheme.ColorToken.primary)
-		}
-		.background(MiraTheme.ColorToken.background)
-	}
-#endif
-
-#if os(macOS)
-	private var macOSLayout: some View {
-		NavigationSplitView {
-			List(selection: $selectedPage) {
-				ForEach(MiraPage.allCases) { page in
-					Label(page.titleText.localized(selectedLanguage), systemImage: page.iconName)
-						.tag(page)
-				}
-			}
-			.navigationTitle(MiraText.appName.localized(selectedLanguage))
-			.frame(minWidth: 180)
-		} detail: {
+	#if !os(macOS)
+		private var iOSLayout: some View {
 			VStack(spacing: 0) {
 				topBar
-				selectedView
+
+				TabView(selection: $selectedPage) {
+					DashboardView()
+						.tabItem {
+							Label(
+								MiraPage.dashboard.titleText.localized(selectedLanguage),
+								systemImage: MiraPage.dashboard.iconName
+							)
+						}
+						.tag(MiraPage.dashboard)
+
+					NetworkView(networkUsageService: networkUsageService)
+						.tabItem {
+							Label(
+								MiraPage.network.titleText.localized(selectedLanguage),
+								systemImage: MiraPage.network.iconName
+							)
+						}
+						.tag(MiraPage.network)
+
+					SettingsView()
+						.tabItem {
+							Label(
+								MiraPage.settings.titleText.localized(selectedLanguage),
+								systemImage: MiraPage.settings.iconName
+							)
+						}
+						.tag(MiraPage.settings)
+				}
+				.tint(MiraTheme.ColorToken.primary)
 			}
-			.frame(minWidth: 520, minHeight: 520)
 			.background(MiraTheme.ColorToken.background)
 		}
-	}
-#endif
+	#endif
+
+	#if os(macOS)
+		private var macOSLayout: some View {
+			NavigationSplitView {
+				List(selection: $selectedPage) {
+					ForEach(MiraPage.allCases) { page in
+						Label(page.titleText.localized(selectedLanguage), systemImage: page.iconName)
+							.tag(page)
+					}
+				}
+				.navigationTitle(MiraText.appName.localized(selectedLanguage))
+				.frame(minWidth: 180)
+			} detail: {
+				VStack(spacing: 0) {
+					topBar
+					selectedView
+				}
+				.frame(minWidth: 520, minHeight: 520)
+				.background(MiraTheme.ColorToken.background)
+			}
+		}
+	#endif
 
 	@ViewBuilder
 	private var selectedView: some View {

@@ -1,9 +1,9 @@
 import SwiftUI
 
 #if os(iOS)
-import UIKit
+	import UIKit
 #elseif os(macOS)
-import AppKit
+	import AppKit
 #endif
 
 enum MiraTheme {
@@ -208,6 +208,21 @@ enum MiraTheme {
 			dark: Color(red: 248 / 255, green: 113 / 255, blue: 113 / 255).opacity(0.45)
 		)
 
+		static let infoForeground = Color.dynamic(
+			light: Color(red: 37 / 255, green: 99 / 255, blue: 235 / 255),
+			dark: Color(red: 96 / 255, green: 165 / 255, blue: 250 / 255)
+		)
+
+		static let infoBackground = Color.dynamic(
+			light: Color(red: 219 / 255, green: 234 / 255, blue: 254 / 255),
+			dark: Color(red: 30 / 255, green: 64 / 255, blue: 175 / 255).opacity(0.35)
+		)
+
+		static let infoBorder = Color.dynamic(
+			light: Color(red: 29 / 255, green: 78 / 255, blue: 216 / 255),
+			dark: Color(red: 96 / 255, green: 165 / 255, blue: 250 / 255).opacity(0.45)
+		)
+
 		static let disconnectedForeground = Color.dynamic(
 			light: Color(red: 108 / 255, green: 114 / 255, blue: 127 / 255),
 			dark: Color(red: 156 / 255, green: 163 / 255, blue: 175 / 255)
@@ -261,7 +276,7 @@ enum MiraTheme {
 		static let icon: Font = .subheadline
 		static let rowIcon: Font = .subheadline
 		static let cardIcon: Font = .title3
-		
+
 		static let metricValue: Font = .system(size: 42, weight: .bold, design: .rounded)
 		static let metricLabel: Font = .subheadline
 		static let metricLabelWeight: Font.Weight = .medium
@@ -289,21 +304,21 @@ extension Color {
 
 extension Color {
 	static func dynamic(light: Color, dark: Color) -> Color {
-#if os(iOS)
-		return Color(
-			UIColor { traitCollection in
-				traitCollection.userInterfaceStyle == .dark
-				? UIColor(dark)
-				: UIColor(light)
-			}
-		)
-#elseif os(macOS)
-		return Color(
-			NSColor(name: nil) { appearance in
-				let isDark = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-				return isDark ? NSColor(dark) : NSColor(light)
-			}
-		)
-#endif
+		#if os(iOS)
+			return Color(
+				UIColor { traitCollection in
+					traitCollection.userInterfaceStyle == .dark
+						? UIColor(dark)
+						: UIColor(light)
+				}
+			)
+		#elseif os(macOS)
+			return Color(
+				NSColor(name: nil) { appearance in
+					let isDark = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+					return isDark ? NSColor(dark) : NSColor(light)
+				}
+			)
+		#endif
 	}
 }

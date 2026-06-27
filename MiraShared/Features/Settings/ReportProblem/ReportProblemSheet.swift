@@ -30,9 +30,9 @@ struct ReportProblemSheet: View {
 				formCard
 			}
 			.navigationTitle(MiraText.reportFormTitle.localized(language))
-#if os(iOS)
-			.navigationBarTitleDisplayMode(.inline)
-#endif
+			#if os(iOS)
+				.navigationBarTitleDisplayMode(.inline)
+			#endif
 			.toolbar {
 				ToolbarItem(placement: .cancellationAction) {
 					Button {
@@ -115,7 +115,8 @@ struct ReportProblemSheet: View {
 			label: MiraText.reportDescription.localized(language),
 			placeholder: MiraText.reportDescriptionPlaceholder.localized(language),
 			text: $description,
-			errorText: isDescriptionInvalid ? MiraText.reportDescriptionRequiredError.localized(language) : nil,
+			errorText: isDescriptionInvalid
+				? MiraText.reportDescriptionRequiredError.localized(language) : nil,
 			minHeight: 140
 		)
 	}

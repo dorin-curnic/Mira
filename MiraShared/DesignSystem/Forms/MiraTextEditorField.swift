@@ -59,8 +59,8 @@ struct MiraTextEditorField: View {
 				)
 				.stroke(
 					isInvalid
-					? MiraTheme.ColorToken.destructive
-					: MiraTheme.ColorToken.border,
+						? MiraTheme.ColorToken.destructive
+						: MiraTheme.ColorToken.border,
 					lineWidth: 1
 				)
 			}

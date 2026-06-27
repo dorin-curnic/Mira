@@ -4,7 +4,9 @@ import SwiftUI
 struct MiramacOSApp: App {
 	var body: some Scene {
 		WindowGroup {
-			ContentView()
+			MiraSonnerHost {
+				ContentView()
+			}
 		}
 	}
 }

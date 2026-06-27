@@ -10,7 +10,7 @@ enum ReportCategory: CaseIterable, Identifiable {
 	case other
 
 	var id: Self { self }
-	
+
 	var titleText: MiraText {
 		switch self {
 		case .language:

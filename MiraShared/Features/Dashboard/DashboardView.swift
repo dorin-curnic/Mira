@@ -14,7 +14,7 @@ struct DashboardView: View {
 	@State private var speedTestProgress = 0.0
 
 	private var connectionActionTitle: String {
-		if (connectionStatus == .connected) {
+		if connectionStatus == .connected {
 			return MiraText.disconnected.localized(language)
 		} else {
 			return MiraText.connected.localized(language)
@@ -23,8 +23,8 @@ struct DashboardView: View {
 
 	private var connectionActionTint: Color {
 		connectionStatus == .connected
-		? MiraTheme.ColorToken.destructive
-		: MiraTheme.ColorToken.primary
+			? MiraTheme.ColorToken.destructive
+			: MiraTheme.ColorToken.primary
 	}
 
 	private let authService = AuthService()

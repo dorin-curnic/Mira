@@ -1,5 +1,5 @@
-import Foundation
 import Darwin
+import Foundation
 
 enum NetworkInterfaceReader {
 	static func readSnapshot() -> NetworkUsageSnapshot {

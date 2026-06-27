@@ -57,10 +57,10 @@ struct MiraPasswordField: View {
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 			)
 			.foregroundStyle(MiraTheme.ColorToken.foreground)
-#if os(iOS)
-			.textInputAutocapitalization(.never)
-			.autocorrectionDisabled()
-#endif
+			#if os(iOS)
+				.textInputAutocapitalization(.never)
+				.autocorrectionDisabled()
+			#endif
 			.tint(MiraTheme.ColorToken.primary)
 		} else {
 			SecureField(
@@ -70,10 +70,10 @@ struct MiraPasswordField: View {
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 			)
 			.foregroundStyle(MiraTheme.ColorToken.foreground)
-#if os(iOS)
-			.textInputAutocapitalization(.never)
-			.autocorrectionDisabled()
-#endif
+			#if os(iOS)
+				.textInputAutocapitalization(.never)
+				.autocorrectionDisabled()
+			#endif
 			.tint(MiraTheme.ColorToken.primary)
 		}
 	}

@@ -12,7 +12,7 @@ final class SpeedTestService {
 		components.path = "/__down"
 		components.queryItems = [
 			URLQueryItem(name: "measId", value: measId),
-			URLQueryItem(name: "bytes", value: String(downloadBytes))
+			URLQueryItem(name: "bytes", value: String(downloadBytes)),
 		]
 
 		return components.url!

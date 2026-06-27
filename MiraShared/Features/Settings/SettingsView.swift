@@ -1,9 +1,9 @@
 import SwiftUI
 
 #if os(iOS)
-import UIKit
+	import UIKit
 #elseif os(macOS)
-import AppKit
+	import AppKit
 #endif
 
 struct SettingsView: View {
@@ -141,11 +141,11 @@ struct SettingsView: View {
 			return
 		}
 
-#if os(iOS)
-		UIApplication.shared.open(url)
-#elseif os(macOS)
-		NSWorkspace.shared.open(url)
-#endif
+		#if os(iOS)
+			UIApplication.shared.open(url)
+		#elseif os(macOS)
+			NSWorkspace.shared.open(url)
+		#endif
 	}
 
 	private func revealPassword() async {

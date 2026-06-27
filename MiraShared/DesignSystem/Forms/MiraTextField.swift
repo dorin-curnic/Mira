@@ -42,11 +42,11 @@ struct MiraTextField: View {
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 			)
 			.foregroundStyle(MiraTheme.ColorToken.foreground)
-#if os(iOS)
-			.textInputAutocapitalization(.never)
-			.keyboardType(keyboard == .email ? .emailAddress : .default)
-			.autocorrectionDisabled()
-#endif
+			#if os(iOS)
+				.textInputAutocapitalization(.never)
+				.keyboardType(keyboard == .email ? .emailAddress : .default)
+				.autocorrectionDisabled()
+			#endif
 			.tint(MiraTheme.ColorToken.primary)
 			.miraFormInputChrome(isInvalid: isInvalid)
 

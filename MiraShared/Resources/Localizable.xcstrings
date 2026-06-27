@@ -1499,6 +1499,9 @@
         }
       }
     },
+    "Dismiss" : {
+
+    },
     "form.input" : {
       "localizations" : {
         "en" : {

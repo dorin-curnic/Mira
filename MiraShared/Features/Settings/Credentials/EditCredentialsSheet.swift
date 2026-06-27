@@ -56,10 +56,11 @@ struct EditCredentialsSheet: View {
 	}
 
 	private var isUsernameFormatInvalid: Bool {
-		!isUsernameEmpty && trimmedUsername.range(
-			of: usernamePattern,
-			options: .regularExpression
-		) == nil
+		!isUsernameEmpty
+			&& trimmedUsername.range(
+				of: usernamePattern,
+				options: .regularExpression
+			) == nil
 	}
 
 	private var isPasswordEmpty: Bool {
@@ -85,9 +86,9 @@ struct EditCredentialsSheet: View {
 				formCard
 			}
 			.navigationTitle(title)
-#if os(iOS)
-			.navigationBarTitleDisplayMode(.inline)
-#endif
+			#if os(iOS)
+				.navigationBarTitleDisplayMode(.inline)
+			#endif
 			.toolbar {
 				ToolbarItem(placement: .cancellationAction) {
 					Button {
@@ -175,7 +176,8 @@ struct EditCredentialsSheet: View {
 			label: MiraText.password.localized(language),
 			placeholder: MiraText.credentialsPasswordPlaceholder.localized(language),
 			text: $password,
-			errorText: isPasswordInvalid ? MiraText.credentialsPasswordRequiredError.localized(language) : nil
+			errorText: isPasswordInvalid
+				? MiraText.credentialsPasswordRequiredError.localized(language) : nil
 		)
 	}
 

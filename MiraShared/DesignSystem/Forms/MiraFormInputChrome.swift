@@ -21,8 +21,8 @@ private struct MiraFormInputChrome: ViewModifier {
 				)
 				.stroke(
 					isInvalid
-					? MiraTheme.ColorToken.destructive
-					: MiraTheme.ColorToken.border,
+						? MiraTheme.ColorToken.destructive
+						: MiraTheme.ColorToken.border,
 					lineWidth: 1
 				)
 			}
