@@ -4,6 +4,7 @@ enum MiraText: String {
 	// Global
 	case appName = "app.name"
 	case formInput = "form.input"
+	case dismiss = "action.dismiss"
 
 	case commonCancel = "common.cancel"
 	case commonClose = "common.close"
@@ -43,6 +44,17 @@ enum MiraText: String {
 	case mbps = "speedtest.mbps"
 	case speedTestErrorInvalidResponse = "speedtest.error.invalid_response"
 	case speedTestErrorEmptyDownload = "speedtest.error.empty_download"
+	case speedTestErrorNetworkUnavailable = "speedtest.error.network_unavailable"
+
+	case dashboardFeedbackConnectedTitle = "dashboard.feedback.connected.title"
+	case dashboardFeedbackConnectedDescription = "dashboard.feedback.connected.description"
+	case dashboardFeedbackDisconnectedTitle = "dashboard.feedback.disconnected.title"
+	case dashboardFeedbackDisconnectedDescription = "dashboard.feedback.disconnected.description"
+	case dashboardFeedbackAuthRejectedTitle = "dashboard.feedback.auth.rejected.title"
+	case dashboardFeedbackAuthRejectedDescription = "dashboard.feedback.auth.rejected.description"
+	case dashboardFeedbackAuthFailedTitle = "dashboard.feedback.auth.failed.title"
+	case dashboardFeedbackAuthUnavailableTitle = "dashboard.feedback.auth.unavailable.title"
+	case dashboardFeedbackSpeedTestFailedTitle = "dashboard.feedback.speedtest.failed.title"
 
 	// Network
 	case networkTitle = "network.title"

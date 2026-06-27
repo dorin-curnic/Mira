@@ -7,7 +7,6 @@ struct SpeedTestCard: View {
 	let progress: Double
 	let isTesting: Bool
 	let isFinished: Bool
-	let errorMessage: String?
 	let onStartTest: () -> Void
 
 	var body: some View {
@@ -30,13 +29,6 @@ struct SpeedTestCard: View {
 					)
 
 					Spacer()
-				}
-
-				if let errorMessage {
-					Text(errorMessage)
-						.font(MiraTheme.Typography.cardSubtitle)
-						.fontWeight(MiraTheme.Typography.cardSubtitleWeight)
-						.foregroundStyle(MiraTheme.ColorToken.destructive)
 				}
 			}
 		}

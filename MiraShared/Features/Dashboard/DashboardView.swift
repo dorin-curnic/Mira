@@ -2,6 +2,7 @@ import SwiftUI
 
 struct DashboardView: View {
 	@Environment(\.miraLanguage) private var language
+	@Environment(MiraSonnerCenter.self) private var sonner
 
 	@State private var connectionStatus: WiFiConnectionStatus = .disconnected
 	@State private var isAuthenticating = false
@@ -9,23 +10,8 @@ struct DashboardView: View {
 
 	@State private var isSpeedTesting = false
 	@State private var speedTestResult: SpeedTestResult?
-	@State private var speedTestError: String?
 	@State private var currentSpeedValueText = "0.0"
 	@State private var speedTestProgress = 0.0
-
-	private var connectionActionTitle: String {
-		if connectionStatus == .connected {
-			return MiraText.disconnected.localized(language)
-		} else {
-			return MiraText.connected.localized(language)
-		}
-	}
-
-	private var connectionActionTint: Color {
-		connectionStatus == .connected
-			? MiraTheme.ColorToken.destructive
-			: MiraTheme.ColorToken.primary
-	}
 
 	private let authService = AuthService()
 	private let speedTestService = SpeedTestService()
@@ -106,13 +92,34 @@ struct DashboardView: View {
 			progress: speedTestProgress,
 			isTesting: isSpeedTesting,
 			isFinished: speedTestResult != nil,
-			errorMessage: speedTestError,
 			onStartTest: {
 				Task {
 					await runSpeedTest()
 				}
 			}
 		)
+	}
+
+	private var connectionActionTitle: String {
+		if connectionStatus == .connected {
+			return MiraText.disconnect.localized(language)
+		} else {
+			return MiraText.connect.localized(language)
+		}
+	}
+
+	private var connectionActionTint: Color {
+		connectionStatus == .connected
+			? MiraTheme.ColorToken.destructive
+			: MiraTheme.ColorToken.primary
+	}
+
+	private var displayedSpeedValueText: String {
+		if isSpeedTesting {
+			return currentSpeedValueText
+		}
+
+		return speedTestResult?.speedValueText ?? "0.0"
 	}
 
 	private func connect() async {
@@ -131,23 +138,41 @@ struct DashboardView: View {
 
 			userAllowsAutoReconnect = true
 			connectionStatus = .connected
+
+			sonner.show(
+				.connected(
+					MiraText.dashboardFeedbackConnectedTitle.localized(language),
+					description: MiraText.dashboardFeedbackConnectedDescription.localized(language)
+				)
+			)
+		} catch let error as AuthError {
+			userAllowsAutoReconnect = false
+			connectionStatus = .rejected
+
+			showAuthenticationFeedback(for: error)
 		} catch {
 			userAllowsAutoReconnect = false
 			connectionStatus = .rejected
+
+			sonner.show(
+				.error(
+					MiraText.dashboardFeedbackAuthFailedTitle.localized(language),
+					description: error.localizedDescription
+				)
+			)
 		}
 	}
 
 	private func disconnect() {
 		userAllowsAutoReconnect = false
 		connectionStatus = .disconnected
-	}
 
-	private var displayedSpeedValueText: String {
-		if isSpeedTesting {
-			return currentSpeedValueText
-		}
-
-		return speedTestResult?.speedValueText ?? "0.0"
+		sonner.show(
+			.disconnected(
+				MiraText.dashboardFeedbackDisconnectedTitle.localized(language),
+				description: MiraText.dashboardFeedbackDisconnectedDescription.localized(language)
+			)
+		)
 	}
 
 	private func runSpeedTest() async {
@@ -156,7 +181,6 @@ struct DashboardView: View {
 		}
 
 		isSpeedTesting = true
-		speedTestError = nil
 		speedTestResult = nil
 		currentSpeedValueText = "0.0"
 		speedTestProgress = 0
@@ -179,13 +203,51 @@ struct DashboardView: View {
 				}
 			}
 		} catch let error as SpeedTestError {
-			speedTestError = error.errorDescription(language: language)
+			let message = error.errorDescription(language: language)
+
 			speedTestProgress = 0
 			currentSpeedValueText = "0.0"
+
+			sonner.show(
+				.error(
+					MiraText.dashboardFeedbackSpeedTestFailedTitle.localized(language),
+					description: message
+				)
+			)
 		} catch {
-			speedTestError = error.localizedDescription
+			let message = MiraText.speedTestErrorNetworkUnavailable.localized(language)
+
 			speedTestProgress = 0
 			currentSpeedValueText = "0.0"
+
+			sonner.show(
+				.error(
+					MiraText.dashboardFeedbackSpeedTestFailedTitle.localized(language),
+					description: message
+				)
+			)
+		}
+	}
+
+	private func showAuthenticationFeedback(for error: AuthError) {
+		switch error {
+		case .unavailable(let message):
+			sonner.show(
+				.error(
+					MiraText.dashboardFeedbackAuthUnavailableTitle.localized(language),
+					description: message
+				)
+			)
+
+		case .failed(let message):
+			sonner.show(
+				.rejected(
+					MiraText.dashboardFeedbackAuthRejectedTitle.localized(language),
+					description: message.isEmpty
+						? MiraText.dashboardFeedbackAuthRejectedDescription.localized(language)
+						: message
+				)
+			)
 		}
 	}
 }
