@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct MiraSonnerToast: View {
+	@Environment(\.miraLanguage) private var language
+
 	let message: MiraSonnerMessage
 	let onDismiss: () -> Void
 	let onInteractionChanged: (Bool) -> Void
@@ -40,7 +42,7 @@ struct MiraSonnerToast: View {
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 			}
 			.buttonStyle(.plain)
-			.accessibilityLabel("Dismiss")
+			.accessibilityLabel(MiraText.dismiss.localized(language))
 		}
 		.padding(.horizontal, MiraTheme.Spacing.md)
 		.padding(.vertical, MiraTheme.Spacing.sm)
