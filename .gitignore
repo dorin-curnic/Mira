@@ -27,3 +27,7 @@ Config.local.plist
 
 # Local SourceKit / xcode-build-server config
 buildServer.json
+
+# App icons
+MiraShared/Resources/AppIcon/
+
