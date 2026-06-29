@@ -1,5 +1,13 @@
 import Combine
 import Foundation
+import Network
+
+enum NetworkUsageState: Equatable {
+	case collecting
+	case active
+	case unavailable
+	case failed
+}
 
 @MainActor
 final class NetworkUsageService: ObservableObject {
@@ -9,29 +17,27 @@ final class NetworkUsageService: ObservableObject {
 	@Published private(set) var downloadedTotalText = "0 B"
 	@Published private(set) var uploadedTotalText = "0 B"
 	@Published private(set) var connectedTimeText = "0s"
+	@Published private(set) var usageState: NetworkUsageState = .collecting
 
 	private var updateTask: Task<Void, Never>?
+	private var pathMonitor: NWPathMonitor?
+	private let pathMonitorQueue = DispatchQueue(label: "Mira.NetworkUsageService.PathMonitor")
+	private var isNetworkPathAvailable = false
+
 	private var firstSnapshot: NetworkUsageSnapshot?
 	private var previousSnapshot: NetworkUsageSnapshot?
 	private var startedAt: Date?
-
 	private let maxPoints = 300
 
 	func start() {
 		stop()
-
-		let snapshot = NetworkInterfaceReader.readSnapshot()
-		firstSnapshot = snapshot
-		previousSnapshot = snapshot
-		startedAt = Date()
+		reset()
+		startPathMonitor()
 
 		updateTask = Task { [weak self] in
 			while !Task.isCancelled {
 				try? await Task.sleep(for: .seconds(1))
-
-				await MainActor.run {
-					self?.tick()
-				}
+				self?.tick()
 			}
 		}
 	}
@@ -39,13 +45,90 @@ final class NetworkUsageService: ObservableObject {
 	func stop() {
 		updateTask?.cancel()
 		updateTask = nil
+
+		pathMonitor?.cancel()
+		pathMonitor = nil
+	}
+
+	private func startPathMonitor() {
+		let monitor = NWPathMonitor(requiredInterfaceType: .wifi)
+		pathMonitor = monitor
+
+		monitor.pathUpdateHandler = { [weak self] path in
+			Task { @MainActor [weak self] in
+				self?.handlePathUpdate(path)
+			}
+		}
+
+		monitor.start(queue: pathMonitorQueue)
+	}
+
+	private func handlePathUpdate(_ path: NWPath) {
+		let wasNetworkPathAvailable = isNetworkPathAvailable
+		isNetworkPathAvailable = path.status == .satisfied
+
+		guard isNetworkPathAvailable else {
+			markUnavailable()
+			return
+		}
+
+		if !wasNetworkPathAvailable {
+			reset()
+			readInitialSnapshot()
+		}
+	}
+
+	private func reset() {
+		clearReadings()
+		usageState = .collecting
+		firstSnapshot = nil
+		previousSnapshot = nil
+		startedAt = Date()
+	}
+
+	private func readInitialSnapshot() {
+		do {
+			let snapshot = try NetworkInterfaceReader.readSnapshot()
+			firstSnapshot = snapshot
+			previousSnapshot = snapshot
+			usageState = .collecting
+		} catch NetworkInterfaceReaderError.activeInterfaceUnavailable {
+			markUnavailable()
+		} catch {
+			markFailed()
+		}
 	}
 
 	private func tick() {
-		let current = NetworkInterfaceReader.readSnapshot()
+		guard isNetworkPathAvailable else {
+			return
+		}
+
+		let current: NetworkUsageSnapshot
+
+		do {
+			current = try NetworkInterfaceReader.readSnapshot()
+		} catch NetworkInterfaceReaderError.activeInterfaceUnavailable {
+			markUnavailable()
+			return
+		} catch {
+			markFailed()
+			return
+		}
+
+		if usageState == .unavailable || usageState == .failed {
+			reset()
+			firstSnapshot = current
+			previousSnapshot = current
+			usageState = .collecting
+			return
+		}
 
 		guard let previousSnapshot, let firstSnapshot, let startedAt else {
+			self.firstSnapshot = current
 			self.previousSnapshot = current
+			self.startedAt = Date()
+			usageState = .collecting
 			return
 		}
 
@@ -91,6 +174,7 @@ final class NetworkUsageService: ObservableObject {
 		connectedTimeText = DurationFormatters.connectionTime(
 			Date().timeIntervalSince(startedAt)
 		)
+		usageState = .active
 
 		self.previousSnapshot = current
 	}
@@ -105,5 +189,28 @@ final class NetworkUsageService: ObservableObject {
 
 	private func byteDelta(current: UInt64, previous: UInt64) -> UInt64 {
 		current >= previous ? current - previous : 0
+	}
+
+	private func markUnavailable() {
+		usageState = .unavailable
+		firstSnapshot = nil
+		previousSnapshot = nil
+		clearReadings()
+	}
+
+	private func markFailed() {
+		usageState = .failed
+		firstSnapshot = nil
+		previousSnapshot = nil
+		clearReadings()
+	}
+
+	private func clearReadings() {
+		points = []
+		downloadSpeedText = "Zero KB/s"
+		uploadSpeedText = "Zero KB/s"
+		downloadedTotalText = "0 B"
+		uploadedTotalText = "0 B"
+		connectedTimeText = "0s"
 	}
 }

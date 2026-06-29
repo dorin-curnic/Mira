@@ -8,6 +8,7 @@ struct NetworkTrafficChart: View {
 	let speedText: String
 	let totalText: String
 	let points: [NetworkUsagePoint]
+	let usageState: NetworkUsageState
 
 	@State private var selectedPoint: NetworkUsagePoint?
 
@@ -74,36 +75,75 @@ struct NetworkTrafficChart: View {
 	}
 
 	private var chart: some View {
-		Chart {
-			chartMarks
-			selectionMarks
-		}
-		.chartXScale(domain: visibleStartDate...visibleEndDate)
-		.chartYScale(domain: 0...maxYValue)
-		.chartXAxis {
-			xAxisMarks
-		}
-		.chartYAxis {
-			yAxisMarks
-		}
-		.chartLegend(.hidden)
-		.chartOverlay { proxy in
-			chartInteractionOverlay(proxy: proxy)
-		}
-		.overlay(alignment: .topLeading) {
-			if let selectedPoint {
-				NetworkChartTooltip(kind: kind, point: selectedPoint)
-					.padding(.top, MiraTheme.Spacing.sm)
-					.padding(.leading, MiraTheme.Spacing.sm)
+		ZStack {
+			if shouldHideChartContent {
+				HStack {
+					Spacer()
+
+					Text(chartMessage ?? "")
+						.font(MiraTheme.Typography.cardSubtitle)
+						.multilineTextAlignment(.center)
+						.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
+						.padding(MiraTheme.Spacing.md)
+
+					Spacer()
+				}
+			} else {
+				Chart {
+					chartMarks
+					selectionMarks
+				}
+				.chartXScale(domain: visibleStartDate...visibleEndDate)
+				.chartYScale(domain: 0...maxYValue)
+				.chartXAxis {
+					xAxisMarks
+				}
+				.chartYAxis {
+					yAxisMarks
+				}
+				.chartLegend(.hidden)
+				.chartOverlay { proxy in
+					chartInteractionOverlay(proxy: proxy)
+				}
+				.overlay(alignment: .topLeading) {
+					if let selectedPoint {
+						NetworkChartTooltip(kind: kind, point: selectedPoint)
+							.padding(.top, MiraTheme.Spacing.sm)
+							.padding(.leading, MiraTheme.Spacing.sm)
+					}
+				}
+				.overlay {
+					if let chartMessage {
+						Text(chartMessage)
+							.font(MiraTheme.Typography.cardSubtitle)
+							.multilineTextAlignment(.center)
+							.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
+							.padding(MiraTheme.Spacing.md)
+					}
+				}
 			}
 		}
-		.overlay {
-			if filteredPoints.isEmpty {
-				Text(MiraText.collectingNetworkData.localized(language))
-					.font(MiraTheme.Typography.cardSubtitle)
-					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
-			}
+	}
+
+	private var chartMessage: String? {
+		switch usageState {
+		case .collecting:
+			return filteredPoints.isEmpty
+				? MiraText.collectingNetworkData.localized(language)
+				: nil
+		case .active:
+			return filteredPoints.isEmpty
+				? MiraText.networkNoRecentData.localized(language)
+				: nil
+		case .unavailable:
+			return MiraText.networkUnavailable.localized(language)
+		case .failed:
+			return MiraText.networkReadingFailed.localized(language)
 		}
+	}
+
+	private var shouldHideChartContent: Bool {
+		usageState == .unavailable || usageState == .failed
 	}
 
 	@ChartContentBuilder

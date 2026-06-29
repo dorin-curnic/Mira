@@ -1,19 +1,21 @@
 import Darwin
 import Foundation
 
+enum NetworkInterfaceReaderError: Error {
+	case addressLookupFailed
+	case activeInterfaceUnavailable
+}
+
 enum NetworkInterfaceReader {
-	static func readSnapshot() -> NetworkUsageSnapshot {
+	static func readSnapshot() throws -> NetworkUsageSnapshot {
 		var addresses: UnsafeMutablePointer<ifaddrs>?
 
 		var downloaded: UInt64 = 0
 		var uploaded: UInt64 = 0
+		var hasReadableInterface = false
 
 		guard getifaddrs(&addresses) == 0, let firstAddress = addresses else {
-			return NetworkUsageSnapshot(
-				timestamp: Date(),
-				downloadedBytes: 0,
-				uploadedBytes: 0
-			)
+			throw NetworkInterfaceReaderError.addressLookupFailed
 		}
 
 		defer {
@@ -28,24 +30,39 @@ enum NetworkInterfaceReader {
 				continue
 			}
 
+			defer {
+				pointer = interface.ifa_next
+			}
+
+			guard let address = interface.ifa_addr else {
+				continue
+			}
+
 			let name = String(cString: interface.ifa_name)
 			let isLoopback = name == "lo0"
 			let isInterfaceUp = (interface.ifa_flags & UInt32(IFF_UP)) != 0
-			let isLinkLayer = interface.ifa_addr.pointee.sa_family == UInt8(AF_LINK)
+			let isLinkLayer = address.pointee.sa_family == UInt8(AF_LINK)
 
-			if !isLoopback, isInterfaceUp, isLinkLayer {
-				let data = unsafeBitCast(
-					interface.ifa_data,
-					to: UnsafeMutablePointer<if_data>?.self
-				)
-
-				if let data {
-					downloaded += UInt64(data.pointee.ifi_ibytes)
-					uploaded += UInt64(data.pointee.ifi_obytes)
-				}
+			guard !isLoopback, isInterfaceUp, isLinkLayer else {
+				continue
 			}
 
-			pointer = interface.ifa_next
+			let data = unsafeBitCast(
+				interface.ifa_data,
+				to: UnsafeMutablePointer<if_data>?.self
+			)
+
+			guard let data else {
+				continue
+			}
+
+			hasReadableInterface = true
+			downloaded += UInt64(data.pointee.ifi_ibytes)
+			uploaded += UInt64(data.pointee.ifi_obytes)
+		}
+
+		guard hasReadableInterface else {
+			throw NetworkInterfaceReaderError.activeInterfaceUnavailable
 		}
 
 		return NetworkUsageSnapshot(
