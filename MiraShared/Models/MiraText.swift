@@ -142,6 +142,11 @@ enum MiraText: String {
 	case reportAttachmentsAdd = "report.attachments.add"
 	case reportAttachmentsNone = "report.attachments.none"
 	case reportAttachmentsSelectedCount = "report.attachments.selected.count"
+	case reportAttachmentsImportFailed = "report.attachments.import.failed"
+	case reportAttachmentsLimitReached = "report.attachments.limit.reached"
+	case reportAttachmentsSizeLimitReached = "report.attachments.size.limit.reached"
+	case reportAttachmentUnknownType = "report.attachment.unknown_type"
+	case reportAttachmentsUnsupportedType = "report.attachments.unsupported_type"
 
 	case reportCategoryLanguage = "report.category.language"
 	case reportCategoryUIBug = "report.category.ui_bug"

@@ -107,21 +107,19 @@ struct EditCredentialsSheet: View {
 						Image(systemName: "checkmark")
 							.fontWeight(MiraTheme.Typography.buttonWeight)
 					}
-					.disabled(!canSave)
 					.tint(MiraTheme.ColorToken.primary)
 				}
 			}
-			.confirmationDialog(
+			.alert(
 				MiraText.credentialsDeleteQuestion.localized(language),
-				isPresented: $isShowingDeleteConfirmation,
-				titleVisibility: .visible
+				isPresented: $isShowingDeleteConfirmation
 			) {
+				Button(MiraText.commonCancel.localized(language), role: .cancel) {}
+
 				Button(MiraText.credentialsDeleteButton.localized(language), role: .destructive) {
 					onDelete?()
 					dismiss()
 				}
-
-				Button(MiraText.commonCancel.localized(language), role: .cancel) {}
 			} message: {
 				Text(MiraText.credentialsDeleteMessage.localized(language))
 			}
@@ -159,7 +157,8 @@ struct EditCredentialsSheet: View {
 			placeholder: MiraText.credentialsUsernamePlaceholder.localized(language),
 			text: $username,
 			errorText: isUsernameInvalid ? usernameErrorText : nil,
-			keyboard: .email
+			keyboard: .email,
+			contentType: .username
 		)
 	}
 

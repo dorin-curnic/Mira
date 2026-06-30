@@ -1,5 +1,9 @@
 import SwiftUI
 
+#if os(iOS)
+	import UIKit
+#endif
+
 struct MiraPasswordField: View {
 	let label: String
 	let placeholder: String
@@ -59,6 +63,7 @@ struct MiraPasswordField: View {
 			.foregroundStyle(MiraTheme.ColorToken.foreground)
 			#if os(iOS)
 				.textInputAutocapitalization(.never)
+				.textContentType(.password)
 				.autocorrectionDisabled()
 			#endif
 			.tint(MiraTheme.ColorToken.primary)
@@ -72,6 +77,7 @@ struct MiraPasswordField: View {
 			.foregroundStyle(MiraTheme.ColorToken.foreground)
 			#if os(iOS)
 				.textInputAutocapitalization(.never)
+				.textContentType(.password)
 				.autocorrectionDisabled()
 			#endif
 			.tint(MiraTheme.ColorToken.primary)

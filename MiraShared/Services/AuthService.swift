@@ -4,6 +4,7 @@ import LocalAuthentication
 enum AuthError: Error, LocalizedError {
 	case unavailable(String)
 	case failed(String)
+	case cancelled
 
 	var errorDescription: String? {
 		switch self {
@@ -11,6 +12,8 @@ enum AuthError: Error, LocalizedError {
 			return message
 		case .failed(let message):
 			return message
+		case .cancelled:
+			return nil
 		}
 	}
 }
@@ -38,13 +41,21 @@ final class AuthService {
 			) { success, error in
 				if success {
 					continuation.resume()
-				} else {
-					continuation.resume(
-						throwing: AuthError.failed(
-							error?.localizedDescription ?? MiraText.authErrorFailed.localized(language)
-						)
-					)
+					return
 				}
+
+				if let error = error as? LAError,
+					[.userCancel, .appCancel, .systemCancel].contains(error.code)
+				{
+					continuation.resume(throwing: AuthError.cancelled)
+					return
+				}
+
+				continuation.resume(
+					throwing: AuthError.failed(
+						error?.localizedDescription ?? MiraText.authErrorFailed.localized(language)
+					)
+				)
 			}
 		}
 	}
