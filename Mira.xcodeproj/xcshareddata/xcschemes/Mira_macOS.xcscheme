@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "DF3B46102FC726D50071E6D9"
-               BuildableName = "Mira_macOS.app"
+               BuildableName = "Mira.app"
                BlueprintName = "Mira_macOS"
                ReferencedContainer = "container:Mira.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DF3B46102FC726D50071E6D9"
-            BuildableName = "Mira_macOS.app"
+            BuildableName = "Mira.app"
             BlueprintName = "Mira_macOS"
             ReferencedContainer = "container:Mira.xcodeproj">
          </BuildableReference>
@@ -63,7 +63,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DF3B46102FC726D50071E6D9"
-            BuildableName = "Mira_macOS.app"
+            BuildableName = "Mira.app"
             BlueprintName = "Mira_macOS"
             ReferencedContainer = "container:Mira.xcodeproj">
          </BuildableReference>
