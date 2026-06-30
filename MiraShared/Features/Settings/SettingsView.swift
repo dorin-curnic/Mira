@@ -9,6 +9,7 @@ import SwiftUI
 struct SettingsView: View {
 	@Environment(\.miraLanguage) private var language
 	@Environment(\.scenePhase) private var scenePhase
+	@Environment(MiraSonnerCenter.self) private var sonner
 
 	@State private var credentials: WiFiCredentials?
 	@State private var isShowingCredentialsSheet = false
@@ -17,7 +18,6 @@ struct SettingsView: View {
 	@State private var isShowingReportForm = false
 
 	private let authService = AuthService()
-	@State private var revealErrorMessage: String?
 
 	@State private var allowsAutoReconnect = true
 	@State private var requiresAuthenticationBeforeReveal = true
@@ -38,18 +38,11 @@ struct SettingsView: View {
 			SettingsCredentialsSection(
 				credentials: credentials,
 				isPasswordRevealed: isPasswordRevealed,
-				revealErrorMessage: revealErrorMessage,
 				onAddCredentials: openAddCredentials,
 				onRevealPassword: {
-					Task {
-						await revealPassword()
-					}
+					Task { await revealPassword() }
 				},
-				onCopyCredential: { field in
-					Task {
-						await copyCredential(field)
-					}
-				},
+				onCopyCredential: copyCredential,
 				onEditCredentials: openEditCredentials
 			)
 
@@ -73,15 +66,14 @@ struct SettingsView: View {
 			EditCredentialsSheet(
 				mode: credentialsSheetMode,
 				initialCredentials: credentials,
-				onSave: { newCredentials in
-					credentials = newCredentials
-					hideSensitiveData()
-				},
+				onSave: saveCredentials,
 				onDelete: deleteCredentials
 			)
 		}
 		.sheet(isPresented: $isShowingReportForm) {
-			ReportProblemSheet()
+			ReportProblemSheet(
+				onSubmit: handleReportSubmit
+			)
 		}
 	}
 
@@ -93,7 +85,12 @@ struct SettingsView: View {
 		Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
 	}
 
-	private func copyCredential(_ field: CredentialField) async {
+	private func copyPortal() {
+		ClipboardService.copy(portal)
+		isPortalCopyButtonVisible = false
+	}
+
+	private func copyCredential(_ field: CredentialField) {
 		guard let credentials else {
 			return
 		}
@@ -103,13 +100,7 @@ struct SettingsView: View {
 			ClipboardService.copy(credentials.username)
 
 		case .password:
-			guard isPasswordRevealed else {
-				await revealPassword()
-				return
-			}
-
 			ClipboardService.copy(credentials.password)
-			revealErrorMessage = nil
 		}
 	}
 
@@ -125,15 +116,39 @@ struct SettingsView: View {
 		isShowingCredentialsSheet = true
 	}
 
+	private func saveCredentials(_ newCredentials: WiFiCredentials) {
+		let isAddingCredentials = credentials == nil
+
+		credentials = newCredentials
+		hideSensitiveData()
+
+		if isAddingCredentials {
+			sonner.show(.success(MiraText.feedbackCredentialsAdded.localized(language)))
+		} else {
+			sonner.show(.success(MiraText.feedbackCredentialsUpdated.localized(language)))
+		}
+	}
+
 	private func deleteCredentials() {
 		credentials = nil
 		hideSensitiveData()
+
+		sonner.show(.success(MiraText.feedbackCredentialsDeleted.localized(language)))
+	}
+
+	private func handleReportSubmit(_ result: Result<Void, Error>) {
+		switch result {
+		case .success:
+			sonner.show(.success(MiraText.feedbackReportSent.localized(language)))
+
+		case .failure:
+			sonner.show(.error(MiraText.feedbackReportSendFailed.localized(language)))
+		}
 	}
 
 	private func hideSensitiveData() {
 		isPasswordRevealed = false
 		isPortalCopyButtonVisible = false
-		revealErrorMessage = nil
 	}
 
 	private func openURL(_ string: String) {
@@ -148,6 +163,7 @@ struct SettingsView: View {
 		#endif
 	}
 
+	@MainActor
 	private func revealPassword() async {
 		guard requiresAuthenticationBeforeReveal else {
 			isPasswordRevealed.toggle()
@@ -161,13 +177,15 @@ struct SettingsView: View {
 			)
 
 			isPasswordRevealed = true
-			revealErrorMessage = nil
 		} catch {
-			revealErrorMessage = error.localizedDescription
+			isPasswordRevealed = false
+			sonner.show(.error(MiraText.feedbackPasswordRevealFailed.localized(language)))
 		}
 	}
 }
 
 #Preview {
-	SettingsView()
+	MiraSonnerHost {
+		SettingsView()
+	}
 }

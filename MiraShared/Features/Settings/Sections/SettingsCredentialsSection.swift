@@ -2,9 +2,10 @@ import SwiftUI
 
 struct SettingsCredentialsSection: View {
 	@Environment(\.miraLanguage) private var language
+
 	let credentials: WiFiCredentials?
 	let isPasswordRevealed: Bool
-	let revealErrorMessage: String?
+
 	let onAddCredentials: () -> Void
 	let onRevealPassword: () -> Void
 	let onCopyCredential: (CredentialField) -> Void
@@ -26,13 +27,6 @@ struct SettingsCredentialsSection: View {
 				onCopy: onCopyCredential,
 				onEdit: onEditCredentials
 			)
-
-			if let revealErrorMessage {
-				Text(revealErrorMessage)
-					.font(MiraTheme.Typography.rowSubtitle)
-					.foregroundStyle(MiraTheme.ColorToken.destructive)
-					.padding(.top, MiraTheme.Spacing.sm)
-			}
 		} else {
 			EmptyCredentialsView(
 				onAddCredentials: onAddCredentials
@@ -43,6 +37,7 @@ struct SettingsCredentialsSection: View {
 
 private struct EmptyCredentialsView: View {
 	@Environment(\.miraLanguage) private var language
+
 	let onAddCredentials: () -> Void
 
 	var body: some View {

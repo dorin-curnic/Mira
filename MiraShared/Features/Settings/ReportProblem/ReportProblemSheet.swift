@@ -11,6 +11,14 @@ struct ReportProblemSheet: View {
 	@State private var isShowingAttachmentImporter = false
 	@State private var didTryToSubmit = false
 
+	let onSubmit: (Result<Void, Error>) -> Void
+
+	init(
+		onSubmit: @escaping (Result<Void, Error>) -> Void = { _ in }
+	) {
+		self.onSubmit = onSubmit
+	}
+
 	private var trimmedDescription: String {
 		description.trimmingCharacters(in: .whitespacesAndNewlines)
 	}
@@ -65,6 +73,7 @@ struct ReportProblemSheet: View {
 				switch result {
 				case .success(let urls):
 					attachmentURLs.append(contentsOf: urls)
+
 				case .failure:
 					break
 				}
@@ -176,5 +185,8 @@ struct ReportProblemSheet: View {
 		guard canSubmit else {
 			return
 		}
+
+		onSubmit(.success(()))
+		dismiss()
 	}
 }
