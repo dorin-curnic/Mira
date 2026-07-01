@@ -248,6 +248,9 @@ struct DashboardView: View {
 						: message
 				)
 			)
+
+		case .cancelled:
+			break
 		}
 	}
 }

@@ -156,11 +156,11 @@ struct SettingsView: View {
 			return
 		}
 
-		#if os(iOS)
-			UIApplication.shared.open(url)
-		#elseif os(macOS)
-			NSWorkspace.shared.open(url)
-		#endif
+#if os(iOS)
+		UIApplication.shared.open(url)
+#elseif os(macOS)
+		NSWorkspace.shared.open(url)
+#endif
 	}
 
 	@MainActor
@@ -177,9 +177,17 @@ struct SettingsView: View {
 			)
 
 			isPasswordRevealed = true
+		} catch AuthError.cancelled {
+			isPasswordRevealed = false
 		} catch {
 			isPasswordRevealed = false
-			sonner.show(.error(MiraText.feedbackPasswordRevealFailed.localized(language)))
+
+			sonner.show(
+				.error(
+					MiraText.feedbackPasswordRevealFailed.localized(language),
+					description: error.localizedDescription
+				)
+			)
 		}
 	}
 }
