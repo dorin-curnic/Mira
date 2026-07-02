@@ -147,6 +147,8 @@ enum MiraText: String {
 	case reportAttachmentsSizeLimitReached = "report.attachments.size.limit.reached"
 	case reportAttachmentUnknownType = "report.attachment.unknown_type"
 	case reportAttachmentsUnsupportedType = "report.attachments.unsupported_type"
+	case reportAttachmentsSourcePhotos = "report.attachments.source.photos"
+	case reportAttachmentsSourceFiles = "report.attachments.source.files"
 
 	case reportCategoryLanguage = "report.category.language"
 	case reportCategoryUIBug = "report.category.ui_bug"

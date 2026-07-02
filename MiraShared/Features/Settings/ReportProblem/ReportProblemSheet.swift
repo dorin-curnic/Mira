@@ -3,6 +3,8 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 #if os(iOS)
+import CryptoKit
+import PhotosUI
 import UIKit
 #elseif os(macOS)
 import AppKit
@@ -11,6 +13,7 @@ import AppKit
 struct ReportAttachment: Identifiable, Equatable {
 	let id = UUID()
 	let url: URL
+	let sourceIdentifier: String?
 	var displayName: String
 	let fileSizeBytes: Int64
 
@@ -26,6 +29,10 @@ struct ReportAttachment: Identifiable, Equatable {
 		Self.videoExtensions.contains(url.pathExtension.lowercased())
 	}
 
+	var isPhoto: Bool {
+		Self.photoExtensions.contains(url.pathExtension.lowercased())
+	}
+
 	var fileSizeDescription: String {
 		ByteCountFormatter.string(
 			fromByteCount: fileSizeBytes,
@@ -34,10 +41,17 @@ struct ReportAttachment: Identifiable, Equatable {
 	}
 
 	private static let videoExtensions = Set(["mov", "mp4", "m4v"])
+  private static let photoExtensions = Set(["png", "jpeg", "jpg", "heic", "heif", "gif"])
 
-	init(url: URL, fileSizeBytes: Int64) {
+	init(
+		url: URL,
+		fileSizeBytes: Int64,
+		displayName: String? = nil,
+		sourceIdentifier: String? = nil
+	) {
 		self.url = url
-		self.displayName = url.deletingPathExtension().lastPathComponent
+		self.sourceIdentifier = sourceIdentifier
+		self.displayName = displayName ?? url.deletingPathExtension().lastPathComponent
 		self.fileSizeBytes = fileSizeBytes
 	}
 }
@@ -53,6 +67,12 @@ struct ReportProblemSheet: View {
 	@State private var didTryToSubmit = false
 	@State private var attachmentErrorText: String?
 
+#if os(iOS)
+	@State private var isShowingAttachmentSourceSheet = false
+	@State private var isShowingPhotosPicker = false
+	@State private var selectedPhotoItems: [PhotosPickerItem] = []
+#endif
+
 	let onSubmit: (Result<Void, Error>) -> Void
 
 	private let maximumAttachmentCount = 5
@@ -64,6 +84,7 @@ struct ReportProblemSheet: View {
 		.heic,
 		.heif,
 		.gif,
+    .pdf,
 		.quickTimeMovie,
 		.mpeg4Movie,
 		.movie,
@@ -84,7 +105,7 @@ struct ReportProblemSheet: View {
 	}
 
 	private var canSubmit: Bool {
-		!trimmedDescription.isEmpty
+		!trimmedDescription.isEmpty && !hasInvalidAttachmentNames
 	}
 
 	var body: some View {
@@ -120,6 +141,26 @@ struct ReportProblemSheet: View {
 					.accessibilityLabel(MiraText.commonSubmit.localized(language))
 				}
 			}
+#if os(iOS)
+			.sheet(isPresented: $isShowingAttachmentSourceSheet) {
+				attachmentSourceSheet
+					.presentationDetents([.height(220)])
+					.presentationDragIndicator(.visible)
+					.presentationCornerRadius(24)
+
+			}
+			.photosPicker(
+				isPresented: $isShowingPhotosPicker,
+				selection: $selectedPhotoItems,
+				maxSelectionCount: maximumAttachmentCount,
+				matching: .any(of: [.images, .videos])
+			)
+			.onChange(of: selectedPhotoItems) { _, newItems in
+				Task {
+					await handlePhotoSelection(newItems)
+				}
+			}
+#endif
 			.fileImporter(
 				isPresented: $isShowingAttachmentImporter,
 				allowedContentTypes: allowedAttachmentTypes,
@@ -179,12 +220,76 @@ struct ReportProblemSheet: View {
 		)
 	}
 
+#if os(iOS)
+	private func defaultPhotoDisplayName(for item: PhotosPickerItem, number: Int) -> String {
+		if item.supportedContentTypes.contains(where: { $0.conforms(to: UTType.movie) }) {
+			return "Video \(number)"
+		}
+		return "Photo \(number)"
+	}
+#endif
+
+#if os(iOS)
+	private var attachmentSourceSheet: some View {
+		VStack(spacing: 0) {
+			attachmentSourceButton(
+				icon: "photo.on.rectangle",
+				title: MiraText.reportAttachmentsSourcePhotos.localized(language)
+			) {
+				isShowingAttachmentSourceSheet = false
+				isShowingPhotosPicker = true
+			}
+
+			attachmentSourceButton(
+				icon: "folder",
+				title: MiraText.reportAttachmentsSourceFiles.localized(language)
+			) {
+				isShowingAttachmentSourceSheet = false
+				isShowingAttachmentImporter = true
+			}
+
+			Spacer(minLength: 0)
+		}
+		.padding(.top, MiraTheme.Spacing.lg)
+		.padding(.horizontal, MiraTheme.Spacing.lg)
+	}
+
+	private func attachmentSourceButton(
+		icon: String,
+		title: String,
+		action: @escaping () -> Void
+	) -> some View {
+		Button(action: action) {
+			HStack(spacing: MiraTheme.Spacing.md) {
+				Image(systemName: icon)
+					.font(.title3)
+					.foregroundStyle(MiraTheme.ColorToken.secondaryForeground)
+					.frame(width: 32)
+				Text(title)
+					.font(.headline)
+					.foregroundStyle(MiraTheme.ColorToken.foreground)
+				Spacer()
+			}
+			.padding(.vertical, MiraTheme.Spacing.md)
+			.contentShape(Rectangle())
+		}
+		.buttonStyle(.plain)
+	}
+#endif
+
 	private var attachmentsField: some View {
 		VStack(alignment: .leading, spacing: MiraTheme.Spacing.sm) {
 			MiraFieldLabel(MiraText.reportAttachments.localized(language))
 
 			Button {
-				isShowingAttachmentImporter = true
+				guard !(attachments.count >= maximumAttachmentCount) else {
+					return
+				}
+#if os(iOS)
+	      isShowingAttachmentSourceSheet = true
+#elseif os(macOS)
+	      isShowingAttachmentImporter = true
+#endif
 			} label: {
 				HStack(spacing: MiraTheme.Spacing.md) {
 					Image(systemName: "paperclip")
@@ -206,6 +311,8 @@ struct ReportProblemSheet: View {
 				.contentShape(Rectangle())
 			}
 			.buttonStyle(.plain)
+			.disabled(attachments.count >= maximumAttachmentCount)
+			.opacity(attachments.count >= maximumAttachmentCount ? 0.5 : 1)
 
 			if let attachmentErrorText {
 				MiraHelperText(attachmentErrorText, tone: .destructive)
@@ -216,6 +323,7 @@ struct ReportProblemSheet: View {
 					ForEach($attachments) { $attachment in
 						ReportAttachmentRow(
 							attachment: $attachment,
+							didTryToSubmit: didTryToSubmit,
 							onDelete: {
 								deleteAttachment(attachment)
 							}
@@ -249,6 +357,109 @@ struct ReportProblemSheet: View {
 			attachmentErrorText = MiraText.reportAttachmentsImportFailed.localized(language)
 		}
 	}
+
+	private var hasInvalidAttachmentNames: Bool {
+		attachments.contains { attachment in
+			attachment.displayName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+		}
+	}
+
+#if os(iOS)
+	@MainActor
+	private func handlePhotoSelection(_ items: [PhotosPickerItem]) async {
+		attachmentErrorText = nil
+		guard !items.isEmpty else {
+			return
+		}
+		let remainingSlots = maximumAttachmentCount - attachments.count
+		guard remainingSlots > 0 else {
+			showAttachmentLimitError()
+			return
+		}
+		var acceptedAttachments: [ReportAttachment] = []
+		for item in items {
+			if acceptedAttachments.count >= remainingSlots {
+				showAttachmentLimitError()
+				break
+			}
+
+			guard let data = try? await item.loadTransferable(type: Data.self) else {
+				showAttachmentImportError()
+				continue
+			}
+
+			let sourceIdentifier = attachmentSourceIdentifier(for: item, data: data)
+
+			let alreadyAttached = attachments.contains { attachment in
+				attachment.sourceIdentifier == sourceIdentifier
+			}
+
+			let alreadyAccepted = acceptedAttachments.contains { attachment in
+				attachment.sourceIdentifier == sourceIdentifier
+			}
+
+			guard !alreadyAttached && !alreadyAccepted else {
+				continue
+			}
+
+			let fileExtension = preferredFileExtension(for: item)
+			let fileName = "\(UUID().uuidString).\(fileExtension)"
+			let url = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+
+			do {
+				try data.write(to: url, options: Data.WritingOptions.atomic)
+			} catch {
+				showAttachmentImportError()
+				continue
+			}
+
+			guard let fileSizeBytes = fileSizeBytes(for: url) else {
+				showAttachmentImportError()
+				continue
+			}
+
+			guard fileSizeBytes <= maximumAttachmentSizeBytes else {
+				showAttachmentSizeError()
+				continue
+			}
+
+			let attachmentNumber = attachments.count + acceptedAttachments.count + 1
+
+			acceptedAttachments.append(
+				ReportAttachment(
+					url: url,
+					fileSizeBytes: fileSizeBytes,
+					displayName: defaultPhotoDisplayName(
+						for: item,
+						number: attachmentNumber
+					),
+					sourceIdentifier: sourceIdentifier
+				)
+			)
+		}
+		attachments.append(contentsOf: acceptedAttachments)
+	}
+
+	private func preferredFileExtension(for item: PhotosPickerItem) -> String {
+		if item.supportedContentTypes.contains(where: { $0.conforms(to: .movie) }) {
+			return "mov"
+		}
+
+		if item.supportedContentTypes.contains(.png) {
+			return "png"
+		}
+
+		if item.supportedContentTypes.contains(.heic) {
+			return "heic"
+		}
+
+		if item.supportedContentTypes.contains(.jpeg) {
+			return "jpg"
+		}
+
+		return "jpg"
+	}
+#endif
 
 	private func addAttachments(_ urls: [URL]) {
 		attachmentErrorText = nil
@@ -308,6 +519,14 @@ struct ReportProblemSheet: View {
 			currentAttachment.id == attachment.id
 		}
 
+#if os(iOS)
+		if let sourceIdentifier = attachment.sourceIdentifier {
+			selectedPhotoItems.removeAll { item in
+				item.itemIdentifier == sourceIdentifier
+			}
+		}
+#endif
+
 		if attachments.count < maximumAttachmentCount {
 			attachmentErrorText = nil
 		}
@@ -344,6 +563,7 @@ struct ReportProblemSheet: View {
 			"heic",
 			"heif",
 			"gif",
+      "pdf",
 			"mov",
 			"mp4",
 			"m4v",
@@ -369,6 +589,22 @@ struct ReportProblemSheet: View {
 		}
 	}
 
+#if os(iOS)
+	private func attachmentSourceIdentifier(
+		for item: PhotosPickerItem,
+		data: Data
+	) -> String {
+		if let itemIdentifier = item.itemIdentifier {
+			return "photos:\(itemIdentifier)"
+		}
+
+		let digest = SHA256.hash(data: data)
+		let hash = digest.map { String(format: "%02x", $0) }.joined()
+
+		return "sha256:\(hash)"
+	}
+#endif
+
 	private func isUserCancelledImport(_ error: Error) -> Bool {
 		let nsError = error as NSError
 
@@ -393,40 +629,51 @@ private struct ReportAttachmentRow: View {
 
 	@Binding var attachment: ReportAttachment
 
+	let didTryToSubmit: Bool
 	let onDelete: () -> Void
 
 	var body: some View {
-		HStack(spacing: MiraTheme.Spacing.md) {
-			ReportAttachmentPreview(url: attachment.url, isVideo: attachment.isVideo)
+		VStack(alignment: .leading, spacing: MiraTheme.Spacing.sm) {
+			HStack(spacing: MiraTheme.Spacing.md) {
+				ReportAttachmentPreview(
+					url: attachment.url,
+					isVideo: attachment.isVideo,
+					isPhoto: attachment.isPhoto
+				)
 				.frame(width: 58, height: 58)
 				.clipShape(RoundedRectangle(cornerRadius: MiraTheme.Radius.md, style: .continuous))
 
-			VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
-				TextField(text: $attachment.displayName) {
-					Text(verbatim: "Attachment name")
+				VStack(alignment: .leading, spacing: MiraTheme.Spacing.xs) {
+					TextField(text: $attachment.displayName) {
+						Text(verbatim: "Attachment name")
+					}
+					.textFieldStyle(.plain)
+					.font(MiraTheme.Typography.rowTitle)
+					.fontWeight(MiraTheme.Typography.rowTitleWeight)
+					.foregroundStyle(MiraTheme.ColorToken.foreground)
+
+					Text("\(fileTypeText) • \(attachment.fileSizeDescription)")
+						.font(MiraTheme.Typography.rowSubtitle)
+						.fontWeight(MiraTheme.Typography.rowSubtitleWeight)
+						.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 				}
-				.textFieldStyle(.plain)
-				.font(MiraTheme.Typography.rowTitle)
-				.fontWeight(MiraTheme.Typography.rowTitleWeight)
-				.foregroundStyle(MiraTheme.ColorToken.foreground)
 
-				Text("\(fileTypeText) • \(attachment.fileSizeDescription)")
-					.font(MiraTheme.Typography.rowSubtitle)
-					.fontWeight(MiraTheme.Typography.rowSubtitleWeight)
-					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
+				Spacer(minLength: MiraTheme.Spacing.md)
+
+				Button(role: .destructive) {
+					onDelete()
+				} label: {
+					Image(systemName: "xmark")
+						.font(MiraTheme.Typography.rowSubtitle)
+						.fontWeight(.semibold)
+						.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
+				}
+				.buttonStyle(.plain)
 			}
 
-			Spacer(minLength: MiraTheme.Spacing.md)
-
-			Button(role: .destructive) {
-				onDelete()
-			} label: {
-				Image(systemName: "xmark")
-					.font(MiraTheme.Typography.rowSubtitle)
-					.fontWeight(.semibold)
-					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
+			if isNameInvalid {
+				MiraHelperText("Attachment name is required.", tone: .destructive)
 			}
-			.buttonStyle(.plain)
 		}
 		.padding(MiraTheme.Spacing.md)
 		.background(MiraTheme.ColorToken.card)
@@ -440,11 +687,16 @@ private struct ReportAttachmentRow: View {
 	private var fileTypeText: String {
 		attachment.fileExtension ?? MiraText.reportAttachmentUnknownType.localized(language)
 	}
+
+	private var isNameInvalid: Bool {
+		didTryToSubmit && attachment.displayName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+	}
 }
 
 private struct ReportAttachmentPreview: View {
 	let url: URL
 	let isVideo: Bool
+  let isPhoto: Bool
 
 	@State private var thumbnail: PlatformImage?
 	@State private var didFinishLoading = false
@@ -458,7 +710,7 @@ private struct ReportAttachmentPreview: View {
 					.resizable()
 					.scaledToFill()
 			} else if didFinishLoading {
-				Image(systemName: isVideo ? "film" : "photo")
+				Image(systemName: isVideo ? "film" : isPhoto ? "photo" : "document")
 					.font(.title3)
 					.foregroundStyle(MiraTheme.ColorToken.mutedForeground)
 			} else {
@@ -535,10 +787,10 @@ private enum AttachmentThumbnailProvider {
 			let cgImage = result.image
 
 #if os(iOS)
-			return UIImage(cgImage: cgImage as! CGImage)
+			return UIImage(cgImage: cgImage)
 #elseif os(macOS)
 			return NSImage(
-				cgImage: cgImage ,
+				cgImage: cgImage,
 				size: NSSize(width: cgImage.width, height: cgImage.height)
 			)
 #endif
