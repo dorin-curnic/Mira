@@ -2,7 +2,7 @@
 name: Bug report
 about: Report broken or unexpected behavior
 title: "[BUG]"
-labels: bug, documentation
+labels: bug
 assignees: dorin-curnic
 
 ---
